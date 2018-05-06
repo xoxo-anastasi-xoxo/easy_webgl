@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Кастомный html элемент</title>
+    <style>
+        /*параметры заданы для удобства*/
+        body {
+            margin: 0;
+        }
+
+        canvas {
+            width: 100vw;
+            height: 100vh;
+            display: block;
+        }
+    </style>
+</head>
+<body>
+
+
+<canvas is="my-scene" id="scene">
+    <my-directed-light direction="0 -0.3 -1"></my-directed-light>
+    <my-camera></my-camera>
+    <my-transform rotation="10 35 0" translation="0 0 -200">
+        <my-shape>
+            <my-box size="40 40 40"></my-box>
+            <my-appearance>
+                <my-color color="255 0 0"></my-color>
+            </my-appearance>
+        </my-shape>
+    </my-transform>
+
+    <!--<my-transform size="10" scale="1 1 1" rotation="30 45 0" translation="-20 0 0">-->
+        <!--<my-shape>-->
+            <!--<my-box></my-box>-->
+            <!--<my-appearance>-->
+                <!--<my-color color="0 0 255"></my-color>-->
+            <!--</my-appearance>-->
+        <!--</my-shape>-->
+    <!--</my-transform>-->
+</canvas>
+<script src="my_func.js"></script>
+<script src="m4.js"></script>
+<script src="my_scene.js"></script>
+<script src="my_directed_light.js"></script>
+<script src="my_camera.js"></script>
+<script src="my_transform.js"></script>
+<script src="my_shape.js"></script>
+<script src="my_box.js"></script>
+<script src="my_appearance.js"></script>
+<script src="my_color.js"></script>
+<script src="main.js"></script>
+</body>
+</html>
