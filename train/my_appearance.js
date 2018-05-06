@@ -23,13 +23,14 @@ function registerAppearance() {
 }
 
 /**
- * Регистрирует кастомный элемент my-appearance.
+ * Инициализирует фрагментный шейдер, используя данные из атрибутов тега my-appearance.
+ * Запускает инициализацию тега, описывающего внешний вид текущей формы.
  *
  * @param {HTMLElement} appearance Ссылка на элемент, с которым мы в данный момент работаем.
  * @param {Number} vertexCount Количество вершин, которые необходимо покрасить.
  */
 function initAppearance(appearance, vertexCount) {
-    // Определяем, какой материал получен.
+    // Определяем, какой материал получен и запускаем его инициализацию.
     let material;
     if (material = appearance.getElementsByTagName("my-color")[0])
         initColor(material, vertexCount);

@@ -1,3 +1,6 @@
+/**
+ * Регистрирует кастомный элемент my-box.
+ */
 function registerCube() {
     let myCubeProto = Object.create(HTMLElement.prototype);
     document.registerElement("my-cube", {
@@ -5,14 +8,26 @@ function registerCube() {
     });
 }
 
-function initCube(cube) {
-    // достать атрибуты
+/**
+ * Инициализирует данные для шедеров, используя атрибуты тега my-box.
+ * Задает вершины и нормали, необходимые для отрисовки прямоугольного параллелепипеда.
+ *
+ * Из атрибута size вида массив получаются размеры параллелепипеда по соответствующим сторонам.
+ * По умолчанию size="10 10 10".
+ * Центр прямоугольного параллепипеда совпадает с началом координат.
+ *
+ * @param cube {HTMLElement} Ссылка на элемент, с которым мы в данный момент работаем.
+ * @returns {number} Количество вершин данной фигуры.
+ */
+function initBox(cube) {
+    // Получаем из атрибута размеры фигры или задаем их по умолчанию.
     let size = cube.attributes["size"] ?
         cube.attributes["size"].value.split(" ").map(value => parseFloat(value)) : [10, 10, 10];
 
-    console.log(size);
+    // Выполняем проверку полученных данных.
+    checkArrayAttribute(size, "my-cube", "size");
 
-    // построить позишнс
+    // Задаем координаты нашей фигуры.
     let x = size[0] / 2;
     let y = size[1] / 2;
     let z = size[2] / 2;
@@ -67,6 +82,7 @@ function initCube(cube) {
         x, -y, z,
     ];
 
+    // Задаем нормали для нашей фигуры.
     let normals = [
         // передняя
         0, 0, 1,
@@ -117,7 +133,7 @@ function initCube(cube) {
         0, -1, 0,
     ];
 
-    // запихнуть позишнс в групс
+    // Передаем данные в сцену.
     groups[groups.length - 1].positions = [...groups[groups.length - 1].positions, ...positions];
     groups[groups.length - 1].normals = [...groups[groups.length - 1].normals, ...normals];
 

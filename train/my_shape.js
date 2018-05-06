@@ -31,6 +31,9 @@ const vertexShaderSource = "attribute vec4 a_position;\n" +
 let vertexShader;
 let program;
 
+/**
+ * Регистрирует кастомный элемент my-shape.
+ */
 function registerShape() {
     let myShapeProto = Object.create(HTMLElement.prototype);
     document.registerElement("my-shape", {
@@ -38,12 +41,16 @@ function registerShape() {
     });
 }
 
-// инит получает ссылку на ноду my-shape
+/**
+ * Инициализирует вершинный шейдер, используя данные из атрибутов тега my-shape.
+ *
+ * @param shape {HTMLElement} Ссылка на элемент, с которым мы в данный момент работаем.
+ */
 function initShape(shape) {
-
+    // Инициализируем форму фигуры.
     let figure, vertexCount;
     if (figure = shape.getElementsByTagName("my-box")[0])
-        vertexCount = initCube(figure);
+        vertexCount = initBox(figure);
     // else if (figure = shape.getElementsByTagName("my-indexed-face-set")[0])
     //     vertexCount = initIndexedFaceSet(figure);
     // else if (figure = shape.getElementsByTagName("my-cone")[0])
@@ -53,15 +60,15 @@ function initShape(shape) {
     else
         throw new Error("Отсутствует тег, задающий форму");
 
+    // Инициализируем внешний вид фигуры.
     let appearance = shape.getElementsByTagName("my-appearance")[0];
     if (appearance)
         initAppearance(appearance, vertexCount);
     else
         throw new Error("Отсутствует обязательный тег my-appearance!");
 
-
-    // Создаем шейдер
+    // Создаем шейдер.
     vertexShader = createShader(gl, gl.VERTEX_SHADER, vertexShaderSource);
-    // Создаем программу
+    // Создаем программу.
     program = createProgram(gl, vertexShader, fragmentShader);
 }

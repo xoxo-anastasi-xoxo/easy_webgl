@@ -1,5 +1,8 @@
 let groups = [];
 
+/**
+ * Регистрирует кастомный элемент my-transform.
+ */
 function registerTransform() {
     let myTransformProto = Object.create(HTMLElement.prototype);
     document.registerElement("my-transform", {
@@ -7,9 +10,14 @@ function registerTransform() {
     });
 }
 
+/**
+ * Инициализирует данные для шедеров, используя атрибуты тега my-transform.
+ */
 function initTransform() {
+    // По порядку инициализируем данными все группы фигур.
     for (let group of scene.getElementsByTagName("my-transform")) {
 
+        // Получаем из атрибутов данные или задаем их по умолчанию.
         let translation = group.attributes["translation"] ?
             group.attributes["translation"].value.split(" ").map(value => parseFloat(value)) : [0, 0, 0];
         let anglesInDegrees = group.attributes["rotation"] ?
@@ -17,6 +25,12 @@ function initTransform() {
         let scale = group.attributes["scale"] ?
             group.attributes["scale"].value.split(" ").map(value => parseFloat(value)) : [1, 1, 1];
 
+        // Выполняем проверку полученных данных.
+        checkArrayAttribute(translation, "my-transform", "translation");
+        checkArrayAttribute(anglesInDegrees, "my-transform", "rotation");
+        checkArrayAttribute(scale, "my-transform", "scale");
+
+        // Создаем группу фигур с текущими параметрами.
         groups.push({
             translation,
             anglesInDegrees,
@@ -48,6 +62,7 @@ function initTransform() {
             }
         });
 
+        // Добавляем данные каждой фигуры из группы.
         for (let child of group.children) {
             initShape(child);
         }
