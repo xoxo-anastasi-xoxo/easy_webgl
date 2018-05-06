@@ -1,5 +1,8 @@
 let scene, gl;
 
+/**
+ * Регистрирует кастомный элемент my-scene
+ */
 function registerScene() {
     let mySceneProto = Object.create(HTMLCanvasElement.prototype);
     document.registerElement("my-scene", {
@@ -8,6 +11,13 @@ function registerScene() {
     });
 }
 
+/**
+ * Регистрирует кастомный элемент my-appearance
+ *
+ * @param {vec3} out the receiving vector
+ * @param {vec3} a vector to normalize
+ * @returns {vec3} out
+ */
 function initScene() {
     scene = document.getElementById("scene");
     scene.width = scene.width || "0";

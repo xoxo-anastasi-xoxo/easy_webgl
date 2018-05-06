@@ -12,6 +12,9 @@ let fragmentShaderSource = " // фрагментные шейдеры не им�
     "  }";
 let fragmentShader;
 
+/**
+ * Регистрирует кастомный элемент my-appearance.
+ */
 function registerAppearance() {
     let myAppearanceProto = Object.create(HTMLElement.prototype);
     document.registerElement("my-appearance", {
@@ -19,17 +22,22 @@ function registerAppearance() {
     });
 }
 
-// узнать что за фигура и запушить ее координаты в последний элемент из групс
+/**
+ * Регистрирует кастомный элемент my-appearance.
+ *
+ * @param {HTMLElement} appearance Ссылка на элемент, с которым мы в данный момент работаем.
+ * @param {Number} vertexCount Количество вершин, которые необходимо покрасить.
+ */
 function initAppearance(appearance, vertexCount) {
-    // определить кто внутри и запустить инициализацию
+    // Определяем, какой материал получен.
     let material;
     if (material = appearance.getElementsByTagName("my-color")[0])
         initColor(material, vertexCount);
-    // else if (material = appearance.getElementsByTagName("my-texture")[0])
-    //     initTexture(material, vertexCount);
+    else if (material = appearance.getElementsByTagName("my-texture")[0])
+        initTexture(material, vertexCount);
     else
-        throw new Error("Отсутствует тег, задающий внешний вид формы!");
+        throw new Error("Отсутствует тег, задающий внешний вид формы! В тег my-appearance необходимо добавить тег my-color или my-texture.");
 
-    // Фрашментный шейдер
+    // Создаем фрагментный шейдер.
     fragmentShader = createShader(gl, gl.FRAGMENT_SHADER, fragmentShaderSource);
 }

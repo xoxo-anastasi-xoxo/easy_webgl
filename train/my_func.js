@@ -101,3 +101,14 @@ function drawScene() {
         gl.drawArrays(primitiveType, offset, count);
     }
 }
+
+function registerAll() {
+    registerScene();
+    registerCamera();
+    registerTransform();
+    registerShape();
+    registerCube();
+    registerAppearance();
+    registerColor();
+    registerDirectedLight();
+}
