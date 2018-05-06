@@ -7,6 +7,10 @@
 
 ## Теги
 
+### хммм
+
+### ``` <canvas is="my-scene" id="scene"></canvas> ```
+
 ### <canvas is="my-scene" id="scene"></canvas>
 
 **Обязательный тег.**
