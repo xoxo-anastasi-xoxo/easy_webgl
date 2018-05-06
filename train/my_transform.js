@@ -1,5 +1,3 @@
-let groups = [];
-
 /**
  * Регистрирует кастомный элемент my-transform.
  */
@@ -15,7 +13,7 @@ function registerTransform() {
  */
 function initTransform() {
     // По порядку инициализируем данными все группы фигур.
-    for (let group of scene.getElementsByTagName("my-transform")) {
+    for (let group of world.scene.getElementsByTagName("my-transform")) {
 
         // Получаем из атрибутов данные или задаем их по умолчанию.
         let translation = group.attributes["translation"] ?
@@ -31,7 +29,7 @@ function initTransform() {
         checkArrayAttribute(scale, "my-transform", "scale");
 
         // Создаем группу фигур с текущими параметрами.
-        groups.push({
+        world.groups.push({
             translation,
             anglesInDegrees,
             scale,
@@ -45,8 +43,8 @@ function initTransform() {
                 matrix = m4.yRotate(matrix, this.anglesInRadians()[1]);
                 matrix = m4.zRotate(matrix, this.anglesInRadians()[2]);
                 matrix = m4.scale(matrix, this.scale[0],  this.scale[1],  this.scale[2]);
-                matrix = m4.multiply(matrix, cameraMatrix);
-                matrix = m4.multiply(projectionMatrix, matrix);
+                matrix = m4.multiply(matrix, world.cameraMatrix);
+                matrix = m4.multiply(world.projectionMatrix, matrix);
 
                 return matrix;
             },
@@ -56,7 +54,7 @@ function initTransform() {
                 matrix = m4.yRotate(matrix, this.anglesInRadians()[1]);
                 matrix = m4.zRotate(matrix, this.anglesInRadians()[2]);
                 matrix = m4.scale(matrix, this.scale[0],  this.scale[1],  this.scale[2]);
-                matrix = m4.multiply(matrix, cameraMatrix);
+                matrix = m4.multiply(matrix, world.cameraMatrix);
 
                 return matrix;
             }

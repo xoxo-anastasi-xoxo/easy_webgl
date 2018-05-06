@@ -1,15 +1,3 @@
-let fragmentShaderSource = " // фрагментные шейдеры не имеют точности по умолчанию, поэтому нам необходимо её\n" +
-    "  // указать. mediump подойдёт для большинства случаев. Он означает \"средняя точность\"\n" +
-    "  precision mediump float;\n" +
-    "\n" +
-    "  varying vec4 v_color;\n" +
-    "  varying vec3 v_light;\n" +
-    "\n" +
-    "uniform vec3 u_reverseLightDirection;\n" +
-    "\n" +
-    "  void main() {\n" +
-    "   gl_FragColor = vec4(v_color.rgb * v_light, v_color.a);\n" +
-    "  }";
 let fragmentShader;
 
 /**
@@ -40,5 +28,5 @@ function initAppearance(appearance, vertexCount) {
         throw new Error("Отсутствует тег, задающий внешний вид формы! В тег my-appearance необходимо добавить тег my-color или my-texture.");
 
     // Создаем фрагментный шейдер.
-    fragmentShader = createShader(gl, gl.FRAGMENT_SHADER, fragmentShaderSource);
+    world.fragmentShader = createShader(world.gl, world.gl.FRAGMENT_SHADER, world.fragmentShaderSource);
 }

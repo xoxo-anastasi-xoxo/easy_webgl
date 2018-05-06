@@ -1,5 +1,3 @@
-let scene, gl;
-
 /**
  * Регистрирует кастомный элемент my-scene.
  */
@@ -18,27 +16,27 @@ function registerScene() {
  */
 function initScene() {
     // Получаем ссылку на сцену.
-    scene = document.getElementById("scene");
-    scene.width = scene.width || "0";
-    scene.height = scene.height || "0";
+    world.scene = document.getElementById("scene");
+    world.scene.width = world.scene.width || "0";
+    world.scene.height = world.scene.height || "0";
 
     // Задаем для нее графический контекст.
-    gl = scene.getContext("webgl");
-    if (!gl)
+    world.gl = world.scene.getContext("webgl");
+    if (!world.gl)
         throw new Error("В данном браузере недоступен WebGL");
 
     // Проверяем на наличие камеры.
-    if (!scene.getElementsByTagName("my-camera").length)
+    if (!world.scene.getElementsByTagName("my-camera").length)
         throw new Error("Отсутствует дочерний элемент - my-camera");
 
     // Подготовим пространство для отрисовки
-    gl.enable(gl.CULL_FACE); // разрешим отрисовку только лицевых треугольников
-    gl.enable(gl.DEPTH_TEST); // включим проверку z-индекса
+    world.gl.enable(world.gl.CULL_FACE); // разрешим отрисовку только лицевых треугольников
+    world.gl.enable(world.gl.DEPTH_TEST); // включим проверку z-индекса
 
     // Запускаем инициализацию дерева элемнтов.
-    initCamera(scene);
-    initTransform(scene);
-    initDirectedLight(scene);
+    initCamera(world.scene);
+    initTransform(world.scene);
+    initDirectedLight(world.scene);
 }
 
 /**
@@ -46,15 +44,15 @@ function initScene() {
  */
 function resizeScene() {
     // получаем размер HTML-элемента canvas
-    let displayWidth = scene.clientWidth;
-    let displayHeight = scene.clientHeight;
+    let displayWidth = world.scene.clientWidth;
+    let displayHeight = world.scene.clientHeight;
 
     // проверяем, отличается ли размер canvas
-    if (scene.width !== displayWidth ||
-        scene.height !== displayHeight) {
+    if (world.scene.width !== displayWidth ||
+        world.scene.height !== displayHeight) {
 
         // подгоняем размер буфера отрисовки под размер HTML-элемента
-        scene.width = displayWidth;
-        scene.height = displayHeight;
+        world.scene.width = displayWidth;
+        world.scene.height = displayHeight;
     }
 }

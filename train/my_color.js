@@ -32,5 +32,5 @@ function initColor(color, vertexCount) {
     }
 
     // Передаем данные в сцену.
-    groups[groups.length - 1].colors = [...groups[groups.length - 1].colors, ...colors];
+    world.groups[world.groups.length - 1].colors = [...world.groups[world.groups.length - 1].colors, ...colors];
 }

@@ -134,8 +134,8 @@ function initBox(cube) {
     ];
 
     // Передаем данные в сцену.
-    groups[groups.length - 1].positions = [...groups[groups.length - 1].positions, ...positions];
-    groups[groups.length - 1].normals = [...groups[groups.length - 1].normals, ...normals];
+    world.groups[world.groups.length - 1].positions = [...world.groups[world.groups.length - 1].positions, ...positions];
+    world.groups[world.groups.length - 1].normals = [...world.groups[world.groups.length - 1].normals, ...normals];
 
     return positions.length / 3;
 }

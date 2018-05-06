@@ -1,6 +1,3 @@
-let isLightUsed;
-let fonLightColor, directedLightColor, lightDirection;
-
 /**
  * Регистрируем кастомный элемент my-directed-light.
  */
@@ -27,33 +24,35 @@ function registerDirectedLight() {
 function initDirectedLight(scene) {
     // Узанем есть ли в текущей сцене направленный свет.
     let light = scene.getElementsByTagName("my-directed-light")[0];
-    isLightUsed = !!light;
+    world.isLightUsed = !!light;
 
     // Задаем необходимым параметрам значения по умолчанию.
-    fonLightColor = [0.15, 0.15, 0.15];
-    directedLightColor = [.9, .9, .9];
-    lightDirection = [0, 0, -1];
+    world.fonLightColor = [0.15, 0.15, 0.15];
+    world.directedLightColor = [.9, .9, .9];
+    world.lightDirection = [0, 0, -1];
 
     // Если свет есть меняем данные согласно атрибутам.
-    if (isLightUsed) {
-        fonLightColor = light.attributes["fon-light-color"] ?
-            light.attributes["fon-light-color"].value.split(" ").map(value => parseFloat(value)).map(value => value / 255) : fonLightColor;
-        directedLightColor = light.attributes["directed-light-color"] ?
-            light.attributes["directed-light-color"].value.split(" ").map(value => parseFloat(value)).map(value => value / 255) : directedLightColor;
-        lightDirection = light.attributes["direction"] ?
-            light.attributes["direction"].value.split(" ").map(value => parseFloat(value)) : lightDirection;
+    if (world.isLightUsed) {
+        world.fonLightColor = light.attributes["fon-light-color"] ?
+            light.attributes["fon-light-color"].value.split(" ").map(value => parseFloat(value)).map(value => value / 255)
+            : world.fonLightColor;
+        world.directedLightColor = light.attributes["directed-light-color"] ?
+            light.attributes["directed-light-color"].value.split(" ").map(value => parseFloat(value)).map(value => value / 255)
+            :  world.directedLightColor;
+        world.lightDirection = light.attributes["direction"] ?
+            light.attributes["direction"].value.split(" ").map(value => parseFloat(value)) :  world.lightDirection;
 
         // Выполняем проверку полученных данных.
-        checkArrayAttribute(fonLightColor, "my-directed-light", "fon-light-color");
-        checkArrayAttribute(directedLightColor, "my-directed-light", "directed-light-color");
-        checkArrayAttribute(lightDirection, "my-directed-light", "direction");
+        checkArrayAttribute(world.fonLightColor, "my-directed-light", "fon-light-color");
+        checkArrayAttribute(world.directedLightColor, "my-directed-light", "directed-light-color");
+        checkArrayAttribute(world.lightDirection, "my-directed-light", "direction");
 
         // Нармализуем вектор направления света.
-        m4.normalize(lightDirection);
+        m4.normalize(world.lightDirection);
 
         // Получим вектор, обратный вектору направления света.
-        lightDirection[0] *= -1;
-        lightDirection[1] *= -1;
-        lightDirection[2] *= -1;
+        world.lightDirection[0] *= -1;
+        world.lightDirection[1] *= -1;
+        world.lightDirection[2] *= -1;
     }
 }
