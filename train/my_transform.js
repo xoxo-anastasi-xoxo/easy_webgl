@@ -37,24 +37,26 @@ function initTransform() {
             positions: [],
             colors: [],
             normals: [],
+            indices: undefined,
             getMatrix: function () {
-                let matrix = m4.translation(this.translation[0],  this.translation[1],  this.translation[2]);
+                let matrix =  world.cameraMatrix;
+                matrix = m4.translate(matrix, this.translation[0],  this.translation[1],  this.translation[2]);
                 matrix = m4.xRotate(matrix, this.anglesInRadians()[0]);
                 matrix = m4.yRotate(matrix, this.anglesInRadians()[1]);
                 matrix = m4.zRotate(matrix, this.anglesInRadians()[2]);
                 matrix = m4.scale(matrix, this.scale[0],  this.scale[1],  this.scale[2]);
-                matrix = m4.multiply(matrix, world.cameraMatrix);
                 matrix = m4.multiply(world.projectionMatrix, matrix);
 
                 return matrix;
             },
             getNormalMatrix: function () {
-                let matrix = m4.translation(this.translation[0],  this.translation[1],  this.translation[2]);
+                let matrix =  world.cameraMatrix;
+                matrix = m4.translate(matrix, this.translation[0],  this.translation[1],  this.translation[2]);
                 matrix = m4.xRotate(matrix, this.anglesInRadians()[0]);
                 matrix = m4.yRotate(matrix, this.anglesInRadians()[1]);
                 matrix = m4.zRotate(matrix, this.anglesInRadians()[2]);
                 matrix = m4.scale(matrix, this.scale[0],  this.scale[1],  this.scale[2]);
-                matrix = m4.multiply(matrix, world.cameraMatrix);
+                matrix = normalFromMat4(matrix);
 
                 return matrix;
             }

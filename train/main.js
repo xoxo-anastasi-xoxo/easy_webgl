@@ -13,35 +13,35 @@ let world = {
     "   gl_FragColor = vec4(v_color.rgb * v_light, v_color.a);\n" +
     "  }",
     fragmentShader: undefined,
-    vertexShaderSource: "attribute vec4 a_position;\n" +
-    "   attribute vec4 a_color;\n" +
-    "   attribute vec3 a_normal;\n" +
-    "\n" +
-    "   uniform mat4 u_matrix;\n" +
-    "   uniform mat4 u_normal_matrix;\n" +
-    "   uniform vec3 u_fon_light_color;\n" +
-    "   uniform vec3 u_light_direction;\n" +
-    "   uniform vec3 u_directed_light_color;\n" +
-    "   uniform int u_use_light;\n" +
-    "\n" +
-    "   varying vec4 v_color;\n" +
-    "   varying vec3 v_light;\n" +
-    "\n" +
-    "   void main() {\n" +
-    "     gl_Position = u_matrix * a_position;\n" +
-    "\n" +
-    "     v_color = a_color;\n" +
-    "\n" +
-    "     if (u_use_light == 0) {\n" +
-    "       v_light = vec3(1,1,1);\n" +
-    "     } else {\n" +
-    "       vec3 transformedNormal = mat3(u_normal_matrix) * a_normal;\n" +
-    "\n" +
-    "       float directed_light_weight = max(dot(transformedNormal, u_light_direction), 0.0);\n" +
-    "\n" +
-    "       v_light = u_fon_light_color + u_directed_light_color * directed_light_weight;\n" +
-    "}\n" +
-    "    }",
+    vertexShaderSource: "attribute vec4 a_position;\
+       attribute vec4 a_color;\
+       attribute vec3 a_normal;\
+    \
+       uniform mat4 u_matrix;\
+       uniform mat3 u_normal_matrix;\
+       uniform vec3 u_fon_light_color;\
+       uniform vec3 u_light_direction;\
+       uniform vec3 u_directed_light_color;\
+       uniform int u_use_light;\
+    \
+       varying vec4 v_color;\
+       varying vec3 v_light;\
+    \
+       void main() {\
+         gl_Position = u_matrix * a_position;\
+    \
+         v_color = a_color;\
+    \
+         if (u_use_light == 0) {\
+           v_light = vec3(1,1,1);\
+         } else {\
+           vec3 transformedNormal = u_normal_matrix * a_normal;\
+    \
+           float directed_light_weight = max(dot(transformedNormal, u_light_direction), 0.0);\
+    \
+           v_light = u_fon_light_color + u_directed_light_color * directed_light_weight;\
+    }\
+        }",
     vertexShader: undefined,
     program: undefined,
     groups: [],
@@ -60,6 +60,7 @@ let world = {
     lightDirection: undefined,
     scene: undefined,
     gl: undefined,
+    navigationType:undefined
 };
 
 // Регистрация кастомных элементов.
@@ -70,54 +71,3 @@ initScene();
 
 // Запуск первоначальной прорисовки сцены.
 drawScene();
-
-// Добавление простого передвижения к сцене.
-document.addEventListener("keydown", (event) => {
-    if (event.shiftKey) {
-        switch (event.keyCode) {
-            case 39:
-                world.cameraYAngleDegrees += 5;
-                setCameraParams();
-                drawScene();
-                break;
-            case 37:
-                world.cameraYAngleDegrees -= 5;
-                setCameraParams();
-                drawScene();
-                break;
-            case 38:
-                world.cameraXAngleDegrees += 5;
-                setCameraParams();
-                drawScene();
-                break;
-            case 40:
-                world.cameraXAngleDegrees -= 5;
-                setCameraParams();
-                drawScene();
-                break;
-        }
-    } else {
-        switch (event.keyCode) {
-            case 39:
-                world.cameraPosition[0] += 3;
-                setCameraParams();
-                drawScene();
-                break;
-            case 37:
-                world.cameraPosition[0] -= 3;
-                setCameraParams();
-                drawScene();
-                break;
-            case 38:
-                world.cameraPosition[2] -= (world.zFar - world.zNear) / 400;
-                setCameraParams();
-                drawScene();
-                break;
-            case 40:
-                world.cameraPosition[2] += (world.zFar - world.zNear) / 400;
-                setCameraParams();
-                drawScene();
-                break;
-        }
-    }
-});

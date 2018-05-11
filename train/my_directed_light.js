@@ -55,4 +55,7 @@ function initDirectedLight(scene) {
         world.lightDirection[1] *= -1;
         world.lightDirection[2] *= -1;
     }
+
+    console.log( world.fonLightColor);
+    console.log( world.directedLightColor);
 }

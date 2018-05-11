@@ -1,7 +1,7 @@
 /**
  * Регистрирует кастомный элемент my-box.
  */
-function registerCube() {
+function registerBox() {
     let myCubeProto = Object.create(HTMLElement.prototype);
     document.registerElement("my-cube", {
         prototype: myCubeProto

@@ -94,7 +94,7 @@ function drawScene() {
     world.gl.viewport(0, 0, world.gl.canvas.width, world.gl.canvas.height);
 
     // Очищаем canvas.
-    world.gl.clearColor(0, 0, 0, 0);
+    world.gl.clearColor(1, 193/255, 193/255, 0.95);
     // Очищаем буферы цветов и глубины.
     world.gl.clear(world.gl.COLOR_BUFFER_BIT | world.gl.DEPTH_BUFFER_BIT);
 
@@ -138,7 +138,7 @@ function drawScene() {
 
         // Передача матрицы нормалей.
         let nMatrixLocation = world.gl.getUniformLocation(world.program, "u_normal_matrix");
-        world.gl.uniformMatrix4fv(nMatrixLocation, false, figure.getNormalMatrix());
+        world.gl.uniformMatrix3fv(nMatrixLocation, false, figure.getNormalMatrix());
 
         // Передача направления освещения.
         let lDirectionLocation =
@@ -160,16 +160,28 @@ function drawScene() {
             world.gl.getUniformLocation(world.program, "u_directed_light_color");
         world.gl.uniform3fv(dColorLocation, world.directedLightColor);
 
-        // Отрисовка сцены.
-        let primitiveType = world.gl.TRIANGLES; // рисовать триугольники.
-        let offset = 0; // начинать с начала буферов
-        let count = figure.positions.length / 3; // количество триугольников передаваемых для отрисовки.
-        world.gl.drawArrays(primitiveType, offset, count);
+        if (figure.indices) {
+            // создание буфера индексов
+            let indexBuffer = world.gl.createBuffer();
+            world.gl.bindBuffer(world.gl.ELEMENT_ARRAY_BUFFER, indexBuffer);
+            world.gl.bufferData(world.gl.ELEMENT_ARRAY_BUFFER, new Uint16Array(figure.indices), world.gl.STATIC_DRAW);
+            // указываем число линий. это число равно числу индексов
+            indexBuffer.numberOfItems = figure.indices.length;
+
+            world.gl.drawElements(world.gl.TRIANGLES, indexBuffer.numberOfItems, world.gl.UNSIGNED_SHORT, 0);
+        } else {
+            // Отрисовка сцены.
+            let primitiveType = world.gl.TRIANGLES; // рисовать триугольники.
+            let offset = 0; // начинать с начала буферов
+            let count = figure.positions.length / 3; // количество триугольников передаваемых для отрисовки.
+            world.gl.drawArrays(primitiveType, offset, count);
+        }
+
     }
 }
 
 /**
- * Перевод из градусов в рабианы.
+ * Перевод из градусов в радианы.
  *
  * @param angle {number} Угол в градусах.
  * @returns {number} Угол в радианах.
@@ -186,7 +198,8 @@ function registerAll() {
     registerCamera();
     registerTransform();
     registerShape();
-    registerCube();
+    registerBox();
+    registerIndexedFaceSet();
     registerAppearance();
     registerColor();
     registerDirectedLight();

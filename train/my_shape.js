@@ -16,10 +16,10 @@ function registerShape() {
 function initShape(shape) {
     // Инициализируем форму фигуры.
     let figure, vertexCount;
-    if (figure = shape.getElementsByTagName("my-box")[0])
+    if (figure = shape.getElementsByTagName("my-indexed-face-set")[0])
+        vertexCount = initIndexedFaceSet(figure);
+    else if (figure = shape.getElementsByTagName("my-box")[0])
         vertexCount = initBox(figure);
-    // else if (figure = shape.getElementsByTagName("my-indexed-face-set")[0])
-    //     vertexCount = initIndexedFaceSet(figure);
     // else if (figure = shape.getElementsByTagName("my-cone")[0])
     //     vertexCount = initCone(figure);
     // else if (figure = shape.getElementsByTagName("my-indexed-face-set")[0])
