@@ -94,7 +94,7 @@ function drawScene() {
     world.gl.viewport(0, 0, world.gl.canvas.width, world.gl.canvas.height);
 
     // Очищаем canvas.
-    world.gl.clearColor(1, 193/255, 193/255, 0.95);
+    world.gl.clearColor(30/255, 30/255, 30/255, 0.5);
     // Очищаем буферы цветов и глубины.
     world.gl.clear(world.gl.COLOR_BUFFER_BIT | world.gl.DEPTH_BUFFER_BIT);
 

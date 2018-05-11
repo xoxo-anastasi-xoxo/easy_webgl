@@ -7,47 +7,6 @@
 <body>
 <script  id="obj" src="input.txt" type="text/plain"> </script>
 <script type="text/javascript">
-    // let myObj = document.getElementById("obj");
-    // console.log(myObj.src);
-    //
-    // fetch(myObj.src).then(value => {console.log(value)})
-    // let modelSource;
-    // let reader = new FileReader();
-    // reader.onload = function (e) {
-    //     modelSource = e.target.result;
-    //     // parseContent(modelSource);
-    //     alert(modelSource);
-    // };
-    //
-    // // let oMyBlob = new Blob(["D:\\Projects\\WebStormProjects\\easy_webgl\\train\\tests\\input.txt"], {type : 'plain/text'});
-    //
-    // reader.readAsText(myObj.src);
-
-    function getXmlHttp() {
-        let xmlhttp;
-        try {
-            xmlhttp = new ActiveXObject("Msxml2.XMLHTTP");
-        } catch (e) {
-            try {
-                xmlhttp = new ActiveXObject("Microsoft.XMLHTTP");
-            } catch (E) {
-                xmlhttp = false;
-            }
-        }
-        if (!xmlhttp && typeof XMLHttpRequest !== 'undefined') {
-            xmlhttp = new XMLHttpRequest();
-        }
-        return xmlhttp;
-    }
-    (function () {
-        let xmlhttp = getXmlHttp();
-        xmlhttp.open('GET', '../../obj_converter/input.txt', false);
-        xmlhttp.send(null);
-        if (xmlhttp.status === 200) {
-            let response = xmlhttp.responseText;
-            alert(response);
-        }
-    })();
 
 </script>
 </body>

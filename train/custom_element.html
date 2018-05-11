@@ -281,18 +281,27 @@
 </script>
 
 <canvas is="my-scene" id="scene">
-    <my-directed-light directed-light-color="200 200 200"  fon-light-color="160 160 160" direction="0 0 -1"></my-directed-light>
+    <my-directed-light directed-light-color="200 200 200"  fon-light-color="100 100 100" direction="0 0 -1"></my-directed-light>
     <!--<my-camera camera-position="20 0 -150" camera-y-angle="0" camera-x-angle="0"></my-camera>-->
     <my-camera navigation-type="object" camera-position="0 0 30"></my-camera>
 
-    <my-transform scale="0.1 0.1 0.1" translation="0 0 -10">
+    <my-transform scale="5 5 5" translation="0 0 -10">
         <my-shape>
-            <my-indexed-face-set model="./tests/oscar.obj"></my-indexed-face-set>
+            <my-indexed-face-set model="./tests/Wolf_obj.obj"></my-indexed-face-set>
             <my-appearance>
-                <my-color color="0 225 0"></my-color>
+                <my-color color="255 255 255"></my-color>
             </my-appearance>
         </my-shape>
     </my-transform>
+
+    <!--<my-transform scale=".2 .2 .2" translation="0 0 -10">-->
+        <!--<my-shape>-->
+            <!--<my-indexed-face-set model="./tests/low-poly-mill.obj"></my-indexed-face-set>-->
+            <!--<my-appearance>-->
+                <!--<my-color color="255 255 255"></my-color>-->
+            <!--</my-appearance>-->
+        <!--</my-shape>-->
+    <!--</my-transform>-->
 
     <my-transform translation="-40 0 -100">
         <my-shape>
@@ -346,9 +355,11 @@
             f 8//6 4//6 3//6
             f 3//6 7//6 8//6
         </script>
-<script src="../obj_converter/obj_loader.js"></script>
-<script src="my_func.js"></script>
+
 <script src="m4.js"></script>
+<script src="my_func.js"></script>
+<script src="../obj_converter/obj_loader.js"></script>
+
 <script src="my_scene.js"></script>
 <script src="my_directed_light.js"></script>
 <script src="my_camera.js"></script>

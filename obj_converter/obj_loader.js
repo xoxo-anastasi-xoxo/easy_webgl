@@ -1,3 +1,41 @@
+function calculateNormals(positions, indices) {
+    let normals = new Array(positions.length);
+    for (let i = 0; i < indices.length; i += 3) {
+        let v1 = [
+            positions[indices[i + 2] * 3] - positions[indices[i + 1] * 3],
+            positions[indices[i + 2] * 3 + 1] - positions[indices[i + 1] * 3 + 1],
+            positions[indices[i + 2] * 3 + 2] - positions[indices[i + 1] * 3 + 2]
+        ];
+        let v2 = [
+            positions[indices[i] * 3] - positions[indices[i + 1] * 3],
+            positions[indices[i] * 3 + 1] - positions[indices[i + 1] * 3 + 1],
+            positions[indices[i] * 3 + 2] - positions[indices[i + 1] * 3 + 2]
+        ];
+        let result = [
+            v1[1] * v2[2] - v1[2] * v2[1],
+            v1[2] * v2[0] - v1[0] * v2[2],
+            v1[0] * v2[1] - v1[1] * v2[0]
+        ];
+        result = m4.normalize(result);
+
+        normals[indices[i] * 3] = result[0];
+        normals[indices[i] * 3 + 1] = result[1];
+        normals[indices[i] * 3 + 2] = result[2];
+
+        normals[indices[i + 1] * 3] = result[0];
+        normals[indices[i + 1] * 3 + 1] = result[1];
+        normals[indices[i + 1] * 3 + 2] = result[2];
+
+        normals[indices[i + 2] * 3] = result[0];
+        normals[indices[i + 2] * 3 + 1] = result[1];
+        normals[indices[i + 2] * 3 + 2] = result[2];
+    }
+
+    console.log(normals);
+
+    return normals;
+}
+
 class Layout {
     /**
      * Create a Layout object. This constructor will throw if any duplicate
@@ -320,6 +358,7 @@ class Mesh {
         exists in the hashindices object, its corresponding value is the index of
         that group and is appended to the unpacked indices array.
        */
+        let exceptionCounter = 0;
         this.name = "";
         const verts = [];
         const vertNormals = [];
@@ -346,12 +385,14 @@ class Mesh {
         const FACE_RE = /^f\s/;
         const WHITESPACE_RE = /\s+/;
         const USE_MATERIAL_RE = /^usemtl/;
+        const all_meaning_re = [VERTEX_RE, NORMAL_RE, TEXTURE_RE, USE_MATERIAL_RE, FACE_RE];
 
         // array of lines separated by the newline
         const lines = objectData.split("\n");
 
         for (let i = 0; i < lines.length; i++) {
             const line = lines[i].trim();
+            // console.log(all_meaning_re.some((re) => re.test(line) ));
             if (!line || line.startsWith("#")) {
                 continue;
             }
@@ -413,6 +454,9 @@ class Mesh {
                   ['16/92/11', '14/101/22', '1/69/1'];
                 */
                 let quad = false;
+
+                const hash0 = elements[0] + "," + currentMaterialIndex;
+
                 for (let j = 0, eleLen = elements.length; j < eleLen; j++) {
                     // Triangulating quads
                     // quad: 'f v0/t0/vn0 v1/t1/vn1 v2/t2/vn2 v3/t3/vn3/'
@@ -424,8 +468,19 @@ class Mesh {
                         j = 2;
                         quad = true;
                     }
-                    const hash0 = elements[0] + "," + currentMaterialIndex;
-                    const hash = elements[j] + "," + currentMaterialIndex;
+
+                    // сделаем так
+                    // проверим, если мы в особом случае, то соберём новую нормаль
+                    // т е прибавим счетчик и для каждой будет
+                    let vv = elements[j].split("/");
+                    if (vv.length === 2) ++exceptionCounter;
+
+                    const hash = (j === 0) ? hash0
+                        :
+                        (vv.length === 2) ? vv[0] + "/" + exceptionCounter + "/" + vv[1] + "," + currentMaterialIndex
+                            :
+                            elements[j] + "," + currentMaterialIndex;
+
                     if (hash in unpacked.hashindices) {
                         unpacked.indices[currentObjectByMaterialIndex].push(unpacked.hashindices[hash]);
                     } else {
@@ -464,10 +519,12 @@ class Mesh {
                          component: +0 is x, +1 is y, +2 is z.
                          This same process is repeated for verts and textures.
                          */
+
                         // Vertex position
                         unpacked.verts.push(+verts[(vertex[0] - 1) * 3 + 0]);
                         unpacked.verts.push(+verts[(vertex[0] - 1) * 3 + 1]);
                         unpacked.verts.push(+verts[(vertex[0] - 1) * 3 + 2]);
+
                         // Vertex textures
                         if (textures.length) {
                             let stride = options.enableWTextureCoord ? 3 : 2;
@@ -477,12 +534,15 @@ class Mesh {
                                 unpacked.textures.push(+textures[(vertex[1] - 1) * stride + 2]);
                             }
                         }
+
                         // Vertex normals
                         unpacked.norms.push(+vertNormals[(vertex[normalIndex] - 1) * 3 + 0]);
                         unpacked.norms.push(+vertNormals[(vertex[normalIndex] - 1) * 3 + 1]);
                         unpacked.norms.push(+vertNormals[(vertex[normalIndex] - 1) * 3 + 2]);
+
                         // Vertex material indices
                         unpacked.materialIndices.push(currentMaterialIndex);
+
                         // add the newly created Vertex to the list of indices
                         unpacked.hashindices[hash] = unpacked.index;
                         unpacked.indices[currentObjectByMaterialIndex].push(unpacked.hashindices[hash]);
@@ -502,13 +562,13 @@ class Mesh {
         self.vertexMaterialIndices = unpacked.materialIndices;
         self.indices = options.indicesPerMaterial ? unpacked.indices : unpacked.indices[currentObjectByMaterialIndex];
 
+        // if (self.vertices.length !== self.vertexNormals.length)
+        self.vertexNormals = calculateNormals(self.vertices, self.indices);
+
         self.materialNames = materialNamesByIndex;
         self.materialIndices = materialIndicesByName;
         self.materialsByIndex = {};
 
-        if (options.calcTangentsAndBitangents) {
-            this.calculateTangentsAndBitangents();
-        }
     }
 
     /**
@@ -704,6 +764,7 @@ class Mesh {
 
         this.tangents = unpacked.tangents;
         this.bitangents = unpacked.bitangents;
+
     }
 
     /**

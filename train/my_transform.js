@@ -50,7 +50,7 @@ function initTransform() {
                 return matrix;
             },
             getNormalMatrix: function () {
-                let matrix =  world.cameraMatrix;
+                let matrix =  m4.identity();
                 matrix = m4.translate(matrix, this.translation[0],  this.translation[1],  this.translation[2]);
                 matrix = m4.xRotate(matrix, this.anglesInRadians()[0]);
                 matrix = m4.yRotate(matrix, this.anglesInRadians()[1]);

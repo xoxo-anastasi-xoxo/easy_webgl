@@ -48,14 +48,11 @@ function initDirectedLight(scene) {
         checkArrayAttribute(world.lightDirection, "my-directed-light", "direction");
 
         // Нармализуем вектор направления света.
-        m4.normalize(world.lightDirection);
+        world.lightDirection = m4.normalize(world.lightDirection);
 
         // Получим вектор, обратный вектору направления света.
         world.lightDirection[0] *= -1;
         world.lightDirection[1] *= -1;
         world.lightDirection[2] *= -1;
     }
-
-    console.log( world.fonLightColor);
-    console.log( world.directedLightColor);
 }

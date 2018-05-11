@@ -37,7 +37,7 @@ let world = {
          } else {\
            vec3 transformedNormal = u_normal_matrix * a_normal;\
     \
-           float directed_light_weight = max(dot(transformedNormal, u_light_direction), 0.0);\
+           float directed_light_weight = max(dot(transformedNormal, u_light_direction) / sqrt(dot(transformedNormal, transformedNormal)), 0.0);\
     \
            v_light = u_fon_light_color + u_directed_light_color * directed_light_weight;\
     }\
