@@ -103,6 +103,9 @@ function drawScene() {
 
     // Запускаем прорисовку каждой фигуры сцены по порядку.
     for (let figure of world.groups) {
+        console.log("zagruzca...");
+
+
         // Передаем данные а атрибуты и буферы.
         // Передаем позиции вершин фигуры.
         let size = 3;              // 3 компоненты на итерацию
@@ -168,8 +171,10 @@ function drawScene() {
             // указываем число линий. это число равно числу индексов
             indexBuffer.numberOfItems = figure.indices.length;
 
+            console.log("here");
             world.gl.drawElements(world.gl.TRIANGLES, indexBuffer.numberOfItems, world.gl.UNSIGNED_SHORT, 0);
         } else {
+            console.log("there");
             // Отрисовка сцены.
             let primitiveType = world.gl.TRIANGLES; // рисовать триугольники.
             let offset = 0; // начинать с начала буферов

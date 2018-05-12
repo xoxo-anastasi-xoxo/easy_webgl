@@ -18,6 +18,8 @@ function registerAppearance() {
  * @param {Number} vertexCount Количество вершин, которые необходимо покрасить.
  */
 function initAppearance(appearance, vertexCount) {
+    console.log("app start")
+
     // Определяем, какой материал получен и запускаем его инициализацию.
     let material;
     if (material = appearance.getElementsByTagName("my-color")[0])
@@ -29,4 +31,6 @@ function initAppearance(appearance, vertexCount) {
 
     // Создаем фрагментный шейдер.
     world.fragmentShader = createShader(world.gl, world.gl.FRAGMENT_SHADER, world.fragmentShaderSource);
+    console.log("app done")
+
 }
