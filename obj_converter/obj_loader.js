@@ -393,7 +393,7 @@ class Mesh {
         for (let i = 0; i < lines.length; i++) {
             const line = lines[i].trim();
             // console.log(all_meaning_re.some((re) => re.test(line) ));
-            if (!line || line.startsWith("#")) {
+            if (!line || line.startsWith("#") || !all_meaning_re.some((re) => re.test(line) )) {
                 continue;
             }
             const elements = line.split(WHITESPACE_RE);
@@ -455,7 +455,14 @@ class Mesh {
                 */
                 let quad = false;
 
-                const hash0 = elements[0] + "," + currentMaterialIndex;
+                let vv = elements[0].split("/");
+                if (vv.length === 2) --exceptionCounter;
+                const hash0 = (vv.length === 2) ? vv[0] + "/" + exceptionCounter + "/" + vv[1] + "," + currentMaterialIndex
+                    :
+                    elements[0] + "," + currentMaterialIndex;
+
+                if (elements.length > 4)
+                    continue;
 
                 for (let j = 0, eleLen = elements.length; j < eleLen; j++) {
                     // Triangulating quads
@@ -473,7 +480,7 @@ class Mesh {
                     // проверим, если мы в особом случае, то соберём новую нормаль
                     // т е прибавим счетчик и для каждой будет
                     let vv = elements[j].split("/");
-                    if (vv.length === 2) ++exceptionCounter;
+                    if (vv.length === 2 && j !== 0) --exceptionCounter;
 
                     const hash = (j === 0) ? hash0
                         :
@@ -562,7 +569,7 @@ class Mesh {
         self.vertexMaterialIndices = unpacked.materialIndices;
         self.indices = options.indicesPerMaterial ? unpacked.indices : unpacked.indices[currentObjectByMaterialIndex];
 
-        // if (self.vertices.length !== self.vertexNormals.length)
+        if (exceptionCounter)
         self.vertexNormals = calculateNormals(self.vertices, self.indices);
 
         self.materialNames = materialNamesByIndex;

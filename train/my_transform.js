@@ -55,7 +55,7 @@ function initTransform() {
                 matrix = m4.xRotate(matrix, this.anglesInRadians()[0]);
                 matrix = m4.yRotate(matrix, this.anglesInRadians()[1]);
                 matrix = m4.zRotate(matrix, this.anglesInRadians()[2]);
-                matrix = m4.scale(matrix, this.scale[0],  this.scale[1],  this.scale[2]);
+                // matrix = m4.scale(matrix, this.scale[0],  this.scale[1],  this.scale[2]);
                 matrix = normalFromMat4(matrix);
 
                 return matrix;
