@@ -14,7 +14,6 @@ function registerShape() {
  * @param shape {HTMLElement} Ссылка на элемент, с которым мы в данный момент работаем.
  */
 function initShape(shape) {
-    console.log("shape start")
 
     // Инициализируем форму фигуры.
     let figure, vertexCount;
@@ -41,5 +40,4 @@ function initShape(shape) {
     // Создаем программу.
     world.program = createProgram(world.gl, world.vertexShader, world.fragmentShader);
 
-    console.log("shape done")
 }

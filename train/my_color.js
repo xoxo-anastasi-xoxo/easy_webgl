@@ -18,8 +18,6 @@ function registerColor() {
  * @param vertexCount {Number} Количество вершин фигуры, которуб необходимо залить цветом.
  */
 function initColor(color, vertexCount) {
-    console.log("color start")
-
     // Получаем из атрибута данные или задаем их по умолчанию.
     let currentColor = color.attributes["color"] ?
         color.attributes["color"].value.split(" ").map(value => parseInt(value)) : [0, 0, 0];
@@ -31,8 +29,5 @@ function initColor(color, vertexCount) {
     // Передаем данные в сцену.
     for (let i = 0; i < vertexCount; ++i) {
         world.groups[world.groups.length - 1].colors.push(currentColor[0], currentColor[1], currentColor[2]);
-        // colors = [...colors, ...currentColor];
     }
-
-    console.log("color done")
 }

@@ -72,25 +72,25 @@ function initCamera(scene) {
                     for (let fig of world.groups) {
                         fig.anglesInDegrees[1] += 5;
                     }
-                    drawScene();
+                    redrawScene();
                     break;
                 case 37:
                     for (let fig of world.groups) {
                         fig.anglesInDegrees[1] -= 5;
                     }
-                    drawScene();
+                    redrawScene();
                     break;
                 case 38:
                     for (let fig of world.groups) {
                         fig.anglesInDegrees[0] -= 5;
                     }
-                    drawScene();
+                    redrawScene();
                     break;
                 case 40:
                     for (let fig of world.groups) {
                         fig.anglesInDegrees[0] += 5;
                     }
-                    drawScene();
+                    redrawScene();
                     break;
                 case 33:
                     // pageup
@@ -100,7 +100,7 @@ function initCamera(scene) {
                     world.cameraPosition[2] += shift[2];
 
                     setCameraParams();
-                    drawScene();
+                    redrawScene();
                     break;
                 case 34:
                     // pagedown
@@ -110,7 +110,7 @@ function initCamera(scene) {
                     world.cameraPosition[2] += shift[2];
 
                     setCameraParams();
-                    drawScene();
+                    redrawScene();
                     break;
             }
 

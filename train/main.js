@@ -1,17 +1,16 @@
 // Глобальный объект, олицетворяющий наш 3D мир.
 let world = {
-    fragmentShaderSource: " // фрагментные шейдеры не имеют точности по умолчанию, поэтому нам необходимо её\n" +
-    "  // указать. mediump подойдёт для большинства случаев. Он означает \"средняя точность\"\n" +
-    "  precision mediump float;\n" +
-    "\n" +
-    "  varying vec4 v_color;\n" +
-    "  varying vec3 v_light;\n" +
-    "\n" +
-    "uniform vec3 u_reverseLightDirection;\n" +
-    "\n" +
-    "  void main() {\n" +
-    "   gl_FragColor = vec4(v_color.rgb * v_light, v_color.a);\n" +
-    "  }",
+    fragmentShaderSource:
+    "  precision mediump float;\
+    \
+      varying vec4 v_color;\
+     varying vec3 v_light;\
+    \
+    uniform vec3 u_reverseLightDirection;\
+    \
+      void main() {\
+       gl_FragColor = vec4(v_color.rgb * v_light, v_color.a);\
+      }",
     fragmentShader: undefined,
     vertexShaderSource: "attribute vec4 a_position;\
        attribute vec4 a_color;\
