@@ -5,8 +5,6 @@ class IndexedFaceSet {
 
         this.init();
 
-
-        console.log(typeof(Worker), typeof(Blob));
         if (typeof(Worker) !== "undefined" && typeof(Blob) !== "undefined") {
             //Браузер пользователя имеет поддержку web worker
             let blobCode = "onmessage = function(e) {\
@@ -40,7 +38,7 @@ class IndexedFaceSet {
                             }\
                         })();\
                         \
-                        // Предварительная подготовка данных\
+                        // Предварительная подготовка данных\n\
                         if (!modelSource)\
                             throw new Error('Неверно указано имя .obj файла!');\
                         let info = new OBJLoader();\
@@ -55,9 +53,9 @@ class IndexedFaceSet {
                             });\
                             }";
 
-            blobCode = "onmessage = function(e) {" +
-                "postMessage({[],[],[]});" +
-                "}";
+            // blobCode = "onmessage = function(e) {" +
+            //     "postMessage({[],[],[]});" +
+            //     "}";
 
             let blobUrl = new Blob ([blobCode], {type: 'application/javascript'});
 

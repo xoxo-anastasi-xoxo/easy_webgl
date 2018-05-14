@@ -126,7 +126,7 @@ class Scene {
             this.sceneElement.attributes["fon-color"].value.split(" ").map(value => parseFloat(value)).map(value => value / 255)
             : this.color;
 
-            // Запускаем инициализацию дерева элемнтов.
+        // Запускаем инициализацию дерева элемнтов.
         for (let trans of this.sceneElement.getElementsByTagName("my-transform")) {
             new Transform(trans, this);
         }
@@ -253,23 +253,22 @@ class Scene {
         }
     }
 
-    drawScene(flag) {
+    drawScene() {
         // Подгоняем размер окна прорисовки под канвас.
         this.resize(this.gl.canvas);
         this.gl.viewport(0, 0, this.gl.canvas.width, this.gl.canvas.height);
 
         // Очищаем canvas.
-        this.gl.clearColor(30 / 255, 30 / 255, 30 / 255, 0.5);
+        this.gl.clearColor(...this.color);
         // Очищаем буферы цветов и глубины.
         this.gl.clear(this.gl.COLOR_BUFFER_BIT | this.gl.DEPTH_BUFFER_BIT);
 
+        if (this.objects.length === 1)
+        this.drawObject(this.objects[0]);
 
         // Запускаем прорисовку каждой фигуры сцены по порядку.
         for (let obj of this.objects) {
-            if (flag)
                 this.drawNewObject(obj);
-            else
-                this.drawObject(obj)
         }
     }
 

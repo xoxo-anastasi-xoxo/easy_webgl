@@ -43,6 +43,7 @@ class Camera {
 
         // Определяем способ навигации по сцене.
         function getShift(shift) {
+            console.log("getShift: ", shift)
             let rot = Algebra.identity();
             rot = Algebra.yRotate(rot, this.cameraRotation[1]);
             rot = Algebra.xRotate(rot, this.cameraRotation[0]);
@@ -53,133 +54,169 @@ class Camera {
         if (this.navigationType === "object") {
             // Добавление вращения и приближения объектов в сцене.
             document.addEventListener("keydown", (event) => {
-                console.log(scene.objects);
                 switch (event.keyCode) {
                     case 39:
+                        // Поворот по оси Y впаво
                         for (let obj of scene.objects) {
                             obj.transform.rotation[1] += Utils.getRadians(5);
                         }
                         scene.drawScene();
                         break;
                     case 37:
+                        // Поворот по оси Y влево
                         for (let obj of scene.objects) {
                             obj.transform.rotation[1] -= Utils.getRadians(5);
                         }
                         scene.drawScene();
                         break;
                     case 38:
+                        // Поворот по оси X вверх
                         for (let obj of scene.objects) {
                             obj.transform.rotation[0] -= Utils.getRadians(5);
                         }
                         scene.drawScene();
                         break;
                     case 40:
+                        // Поворот по оси X вниз
                         for (let obj of scene.objects) {
                             obj.transform.rotation[0] += Utils.getRadians(5);
                         }
                         scene.drawScene();
                         break;
-                    case 33:
-                        // pageup
-                        shift = getShift.apply(this,[0, 0, (this.zFar - this.zNear) / 400, 0]);
-                        this.cameraPosition[0] += shift[0];
-                        this.cameraPosition[1] += shift[1];
-                        this.cameraPosition[2] += shift[2];
-
-                        this.setCameraParams();
-                        this.scene.drawScene();
-                        break;
                     case 34:
-                        // pagedown
-                        shift = getShift.apply(this,[0, 0, -(this.zFar - this.zNear) / 400, 0]);
-                        this.cameraPosition[0] += shift[0];
-                        this.cameraPosition[1] += shift[1];
-                        this.cameraPosition[2] += shift[2];
+                        // Поворот по оси Z против часовой
+                        for (let obj of scene.objects) {
+                            obj.transform.rotation[2] += Utils.getRadians(5);
+                        }
+                        scene.drawScene();
+                        break;
+                    case 33:
+                        // Поворот по оси Z по часовой
+                        for (let obj of scene.objects) {
+                            obj.transform.rotation[2] -= Utils.getRadians(5);
+                        }
+                        scene.drawScene();
+                        break;
+                    case 36:
+                        // Home: приближение
+                        shift = getShift.call(scene.activeCamera,[0, 0, -1, 0]);
+                        scene.activeCamera.cameraPosition[0] += shift[0];
+                        scene.activeCamera.cameraPosition[1] += shift[1];
+                        scene.activeCamera.cameraPosition[2] += shift[2];
 
-                        this.setCameraParams();
-                        this.scene.drawScene();
+                        scene.activeCamera.setCameraParams();
+                        scene.drawScene();
+                        break;
+                    case 35:
+                        // End: отдаление
+                        shift = getShift.call(scene.activeCamera,[0, 0, 1, 0]);
+                        scene.activeCamera.cameraPosition[0] += shift[0];
+                        scene.activeCamera.cameraPosition[1] += shift[1];
+                        scene.activeCamera.cameraPosition[2] += shift[2];
+
+                        scene.activeCamera.setCameraParams();
+                        scene.drawScene();
                         break;
                 }
 
             });
-        } else if (world.navigationType === "camera") {
+        } else if (this.navigationType === "camera") {
             // Добавление бродящего передвижения к сцене.
             document.addEventListener("keydown", (event) => {
                 if (event.shiftKey) {
                     switch (event.keyCode) {
                         case 39:
-                            this.cameraRotation[1] -= 1;
-                            this.setCameraParams();
-                            this.scene.drawScene();
+                            scene.activeCamera.cameraRotation[1] -= Utils.getRadians(1);
+
+                            scene.activeCamera.setCameraParams();
+                            scene.drawScene();
                             break;
                         case 37:
-                            this.cameraRotation[1] += 1;
-                            this.setCameraParams();
-                            this.scene.drawScene();
+                            scene.activeCamera.cameraRotation[1] += Utils.getRadians(1);
+
+                            scene.activeCamera.setCameraParams();
+                            scene.drawScene();
                             break;
                         case 38:
-                            this.cameraRotation[0] += 1;
-                            this.setCameraParams();
-                            this.scene.drawScene();
+                            scene.activeCamera.cameraRotation[0] += Utils.getRadians(1);
+
+                            scene.activeCamera.setCameraParams();
+                            scene.drawScene();
                             break;
                         case 40:
-                            this.cameraRotation[0] -= 1;
-                            this.setCameraParams();
-                            this.scene.drawScene();
+                            scene.activeCamera.cameraRotation[0] -= Utils.getRadians(1);
+
+                            scene.activeCamera.setCameraParams();
+                            scene.drawScene();
+                            break;
+                        case 34:
+                            scene.activeCamera.cameraRotation[2] -= Utils.getRadians(1);
+
+                            scene.activeCamera.setCameraParams();
+                            scene.drawScene();
+                            break;
+                        case 33:
+                            scene.activeCamera.cameraRotation[2] += Utils.getRadians(1);
+
+                            scene.activeCamera.setCameraParams();
+                            scene.drawScene();
                             break;
                     }
                 } else {
                     switch (event.keyCode) {
                         case 39:
-                            shift = getShift.apply(this,[3, 0, 0, 0]);
-                            this.cameraPosition[0] += shift[0];
-                            this.cameraPosition[1] += shift[1];
-                            this.cameraPosition[2] += shift[2];
-                            this.setCameraParams();
-                            this.scene.drawScene();
+                            shift = getShift.call(scene.activeCamera,[1, 0, 0, 0]);
+                            scene.activeCamera.cameraPosition[0] += shift[0];
+                            scene.activeCamera.cameraPosition[1] += shift[1];
+                            scene.activeCamera.cameraPosition[2] += shift[2];
+
+                            scene.activeCamera.setCameraParams();
+                            scene.drawScene();
                             break;
                         case 37:
-                            shift = getShift.apply(this,[-3, 0, 0, 0]);
-                            this.cameraPosition[0] += shift[0];
-                            this.cameraPosition[1] += shift[1];
-                            this.cameraPosition[2] += shift[2];
-                            this.setCameraParams();
-                            this.scene.drawScene();
+                            shift = getShift.call(scene.activeCamera,[-1, 0, 0, 0]);
+                            scene.activeCamera.cameraPosition[0] += shift[0];
+                            scene.activeCamera.cameraPosition[1] += shift[1];
+                            scene.activeCamera.cameraPosition[2] += shift[2];
+
+                            scene.activeCamera.setCameraParams();
+                            scene.drawScene();
                             break;
                         case 38:
-                            shift = getShift.apply(this,[0, 0, -(this.zFar - this.zNear) / 400, 0]);
-                            this.cameraPosition[0] += shift[0];
-                            this.cameraPosition[1] += shift[1];
-                            this.cameraPosition[2] += shift[2];
-                            this.setCameraParams();
-                            this.scene.drawScene();
+                            shift = getShift.call(scene.activeCamera,[0, 1, 0, 0]);
+                            scene.activeCamera.cameraPosition[0] += shift[0];
+                            scene.activeCamera.cameraPosition[1] += shift[1];
+                            scene.activeCamera.cameraPosition[2] += shift[2];
+
+                            scene.activeCamera.setCameraParams();
+                            scene.drawScene();
                             break;
                         case 40:
-                            shift = getShift.apply(this,[0, 0, (this.zFar - this.zNear) / 400, 0]);
-                            this.cameraPosition[0] += shift[0];
-                            this.cameraPosition[1] += shift[1];
-                            this.cameraPosition[2] += shift[2];
-                            this.setCameraParams();
-                            this.scene.drawScene();
+                            shift = getShift.call(scene.activeCamera,[0, -1, 0, 0]);
+                            scene.activeCamera.cameraPosition[0] += shift[0];
+                            scene.activeCamera.cameraPosition[1] += shift[1];
+                            scene.activeCamera.cameraPosition[2] += shift[2];
+
+                            scene.activeCamera.setCameraParams();
+                            scene.drawScene();
                             break;
-                        case 33:
-                            // pageup
-                            shift = getShift.apply(this,[0, 3, 0, 0]);
-                            this.cameraPosition[0] += shift[0];
-                            this.cameraPosition[1] += shift[1];
-                            this.cameraPosition[2] += shift[2];
-                            this.setCameraParams();
-                            this.scene.drawScene();
+                        case 35:
+                            shift = getShift.call(scene.activeCamera,[0, 0, 1, 0]);
+                            scene.activeCamera.cameraPosition[0] += shift[0];
+                            scene.activeCamera.cameraPosition[1] += shift[1];
+                            scene.activeCamera.cameraPosition[2] += shift[2];
+
+                            scene.activeCamera.setCameraParams();
+                            scene.drawScene();
                             break;
-                        case 34:
-                            // pagedown
-                            shift = getShift.apply(this,[0, -3, 0, 0]);
-                            this.cameraPosition[0] += shift[0];
-                            this.cameraPosition[1] += shift[1];
-                            this.cameraPosition[2] += shift[2];
-                            this.setCameraParams();
-                            this.scene.drawScene();
-                            break;
+                        case 36:
+                            shift = getShift.call(scene.activeCamera,[0, 0, -1, 0]);
+                            scene.activeCamera.cameraPosition[0] += shift[0];
+                            scene.activeCamera.cameraPosition[1] += shift[1];
+                            scene.activeCamera.cameraPosition[2] += shift[2];
+
+                            scene.activeCamera.setCameraParams();
+                            scene.drawScene();
                     }
                 }
             });
