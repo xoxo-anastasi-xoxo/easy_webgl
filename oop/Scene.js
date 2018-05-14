@@ -1,9 +1,9 @@
 class Scene {
-    constructor(scene) {
-        this.scene = scene;
+    constructor(sceneElement) {
+        this.sceneElement = sceneElement;
         this.gl = undefined;
 
-        this.color = [255, 255, 255, 0];
+        this.color = [1, 1, 1, 0];
 
         this.objects = [];
         this.cameras = [];
@@ -61,6 +61,8 @@ class Scene {
      * Регистрация всех кастомных HTML-элементов.
      */
     registerAll() {
+        if (!document.registerElement)
+            return;
         let mySceneProto = Object.create(HTMLCanvasElement.prototype);
         document.registerElement("my-scene", {
             prototype: mySceneProto,
@@ -96,23 +98,23 @@ class Scene {
      * Запускает инициализацию Камеры, Света и всех фигур сцены.
      */
     init() {
-        this.scene.width = this.scene.width || "0";
-        this.scene.height = this.scene.height || "0";
+        this.sceneElement.width = this.sceneElement.width || "0";
+        this.sceneElement.height = this.sceneElement.height || "0";
 
         // Задаем для нее графический контекст.
-        this.gl = this.scene.getContext("webgl");
+        this.gl = this.sceneElement.getContext("webgl") || this.sceneElement.getContext("experimental-webgl");
         if (!this.gl)
             throw new Error("В данном браузере недоступен WebGL");
 
         // Проверяем на наличие камеры.
-        if (!this.scene.getElementsByTagName("my-camera").length)
+        if (!this.sceneElement.getElementsByTagName("my-camera").length)
             throw new Error("Отсутствует дочерний элемент - my-camera");
-        for (let cam of this.scene.getElementsByTagName("my-camera")) {
-            this.cameras.push(new Camera(cam));
+        for (let cam of this.sceneElement.getElementsByTagName("my-camera")) {
+            this.cameras.push(new Camera(cam, this));
             if (this.cameras[this.cameras.length - 1].isActive)
                 this.activeCamera = this.cameras[this.cameras.length - 1];
         }
-        if (this.activeCamera)
+        if (!this.activeCamera)
             this.activeCamera = this.cameras[0];
 
         // Подготовим пространство для отрисовки
@@ -120,12 +122,17 @@ class Scene {
         this.gl.enable(this.gl.DEPTH_TEST); // включим проверку z-индекса
 
         // Достаем из атрибутов указанный цвет фона
-        this.color =
+        this.color = this.sceneElement.attributes["fon-color"] ?
+            this.sceneElement.attributes["fon-color"].value.split(" ").map(value => parseFloat(value)).map(value => value / 255)
+            : this.color;
 
             // Запускаем инициализацию дерева элемнтов.
-            initCamera(thi.scene);
-        initTransform(world.scene);
-        initDirectedLight(world.scene);
+        for (let trans of this.sceneElement.getElementsByTagName("my-transform")) {
+            new Transform(trans, this);
+        }
+
+        this.light = this.sceneElement.getElementsByTagName("my-directed-light").length ?
+            new DirectedLight(this.sceneElement.getElementsByTagName("my-directed-light")[0], this) : null;
     }
 
     /**
@@ -133,24 +140,24 @@ class Scene {
      */
     resize() {
         // получаем размер HTML-элемента canvas
-        let displayWidth = world.scene.clientWidth;
-        let displayHeight = world.scene.clientHeight;
+        let displayWidth = this.sceneElement.clientWidth;
+        let displayHeight = this.sceneElement.clientHeight;
 
         // проверяем, отличается ли размер canvas
-        if (world.scene.width !== displayWidth ||
-            world.scene.height !== displayHeight) {
+        if (this.sceneElement.width !== displayWidth ||
+            this.sceneElement.height !== displayHeight) {
 
             // подгоняем размер буфера отрисовки под размер HTML-элемента
-            world.scene.width = displayWidth;
-            world.scene.height = displayHeight;
+            this.sceneElement.width = displayWidth;
+            this.sceneElement.height = displayHeight;
         }
     }
 
 
-    addObject(transform, shape, appearance) {
-        let fragmentShader = this.createShader(this.gl, this.gl.FRAGMENT_SHADER, this.fragmentShaderSource);
-        let vertexShader = this.createShader(this.gl, this.gl.VERTEX_SHADER, this.vertexShaderSource);
-        let program = this.createProgram(this.gl, vertexShader, fragmentShader);
+    addObject({transform, shape, appearance}) {
+        let fragmentShader = this.createShader(this.gl.FRAGMENT_SHADER, this.fragmentShaderSource);
+        let vertexShader = this.createShader(this.gl.VERTEX_SHADER, this.vertexShaderSource);
+        let program = this.createProgram(vertexShader, fragmentShader);
         let obj = {
             transform,
             shape,
@@ -170,98 +177,86 @@ class Scene {
         // Передаем данные а атрибуты и буферы.
         // Передаем позиции вершин фигуры.
         let size = 3;              // 3 компоненты на итерацию
-        let type = world.gl.FLOAT; // наши данные - 32-битные числа с плавающей точкой
+        let type = this.gl.FLOAT; // наши данные - 32-битные числа с плавающей точкой
         let normalize = false;     // не нормализовать данные
         let stride = 0;            // 0 = перемещаться на size * sizeof(type) каждую итерацию для получения следующего положения
         let buf_offset = 0;        // начинать с начала буфера
-        fillAttribute(world.gl, world.program, "a_position", new Float32Array(figure.positions),
+        this.fillAttribute(object.program, "a_position", new Float32Array(object.shape.vertices),
             size, type, normalize, stride, buf_offset);
 
-        console.log("zagruzca нормалей...", prev - new Date());
-        prev = new Date();
 
         // Передаем координаты нормалей фигуры.
         size = 3;                // 3 компоненты на итерацию
-        type = world.gl.FLOAT;   // наши данные - 32-битные числа с плавающей точкой
+        type = this.gl.FLOAT;   // наши данные - 32-битные числа с плавающей точкой
         normalize = false;       // не нормализовать данные
         stride = 0;              // 0 = перемещаться на size * sizeof(type) каждую итерацию для получения следующего положения
         buf_offset = 0;          // начинать с начала буфера
-        fillAttribute(world.gl, world.program, "a_normal", new Float32Array(figure.normals),
+        this.fillAttribute(object.program, "a_normal", new Float32Array(object.shape.normals),
             size, type, normalize, stride, buf_offset);
 
-        console.log("zagruzca цветов...", prev - new Date());
-        prev = new Date();
         // Передаем цвета вершин фигуры.
         size = 3;                       // 3 компоненты на итерацию
-        type = world.gl.UNSIGNED_BYTE;  // данные - 8-битные беззнаковые целые
+        type = this.gl.UNSIGNED_BYTE;  // данные - 8-битные беззнаковые целые
         normalize = true;               // нормализовать данные (конвертировать из 0-255 в 0-1)
         stride = 0;                     // 0 = перемещаться на size * sizeof(type) каждую итерацию для получения следующего положения
         buf_offset = 0;                 // начинать с начала буфера
-        fillAttribute(world.gl, world.program, "a_color", new Uint8Array(figure.colors),
+        this.fillAttribute(object.program, "a_color", new Uint8Array(object.appearance.colors),
             size, type, normalize, stride, buf_offset);
-
-        console.log("zagruzca разных юниформ переменных...", prev - new Date());
-        prev = new Date();
 
         // Передаем данные в Uniform-переменные.
         // Передача матрицы смещения.
-        let matrixLocation = world.gl.getUniformLocation(world.program, "u_matrix");
-        world.gl.uniformMatrix4fv(matrixLocation, false, figure.getMatrix());
+        let matrixLocation = this.gl.getUniformLocation(object.program, "u_matrix");
+        this.gl.uniformMatrix4fv(matrixLocation, false,
+            object.transform.getMatrix(this.activeCamera.cameraMatrix, this.activeCamera.projectionMatrix));
 
         // Передача матрицы нормалей.
-        let nMatrixLocation = world.gl.getUniformLocation(world.program, "u_normal_matrix");
-        world.gl.uniformMatrix3fv(nMatrixLocation, false, figure.getNormalMatrix());
+        let nMatrixLocation = this.gl.getUniformLocation(object.program, "u_normal_matrix");
+        this.gl.uniformMatrix3fv(nMatrixLocation, false, object.transform.getNormalMatrix());
 
         // Передача направления освещения.
         let lDirectionLocation =
-            world.gl.getUniformLocation(world.program, "u_light_direction");
-        world.gl.uniform3fv(lDirectionLocation, m4.normalize(world.lightDirection));
+            this.gl.getUniformLocation(object.program, "u_light_direction");
+        this.gl.uniform3fv(lDirectionLocation, Algebra.normalize(this.light.lightDirection));
 
         // Передача флага использования света.
         let useLightLocation =
-            world.gl.getUniformLocation(world.program, "u_use_light");
-        world.gl.uniform1i(useLightLocation, Number(world.isLightUsed));
+            this.gl.getUniformLocation(object.program, "u_use_light");
+        this.gl.uniform1i(useLightLocation, Number(this.light));
 
         // Передача цвета фонового освещения.
         let fColorLocation =
-            world.gl.getUniformLocation(world.program, "u_fon_light_color");
-        world.gl.uniform3fv(fColorLocation, world.fonLightColor);
+            this.gl.getUniformLocation(object.program, "u_fon_light_color");
+        this.gl.uniform3fv(fColorLocation, this.light.fonLightColor);
 
         // Передача цвета направленного освещения.
         let dColorLocation =
-            world.gl.getUniformLocation(world.program, "u_directed_light_color");
-        world.gl.uniform3fv(dColorLocation, world.directedLightColor);
+            this.gl.getUniformLocation(object.program, "u_directed_light_color");
+        this.gl.uniform3fv(dColorLocation, this.light.directedLightColor);
 
-        if (figure.indices) {
-            console.log("zagruzca индексов...", prev - new Date());
-            prev = new Date();
+        if (object.shape.indices) {
+            // Передаем индексы поверхностей фигуры.
+            this.fillIndexAttribute(object.shape.indices);
 
-            // создание буфера индексов
-            let indexBuffer = world.gl.createBuffer();
-            world.gl.bindBuffer(world.gl.ELEMENT_ARRAY_BUFFER, indexBuffer);
-            world.gl.bufferData(world.gl.ELEMENT_ARRAY_BUFFER, new Uint16Array(figure.indices), world.gl.STATIC_DRAW);
-            // указываем число линий. это число равно числу индексов
-            indexBuffer.numberOfItems = figure.indices.length;
-
-            console.log("отрисовка", prev - new Date());
-            prev = new Date();
-
-            world.gl.drawElements(world.gl.TRIANGLES, indexBuffer.numberOfItems, world.gl.UNSIGNED_SHORT, 0);
-            console.log("done", prev - new Date());
+            // Отрисовка сцены.
+            let primitiveType = this.gl.TRIANGLES; // рисовать триугольники.
+            let offset = 0; // начинать с начала буферов
+            let type = this.gl.UNSIGNED_SHORT;
+            let count = object.shape.indices.length / 3; // количество триугольников передаваемых для отрисовки.
+            this.gl.drawElements(primitiveType, count, type, offset);
 
         } else {
             // Отрисовка сцены.
-            let primitiveType = world.gl.TRIANGLES; // рисовать триугольники.
+            let primitiveType = this.gl.TRIANGLES; // рисовать триугольники.
             let offset = 0; // начинать с начала буферов
-            let count = figure.positions.length / 3; // количество триугольников передаваемых для отрисовки.
-            world.gl.drawArrays(primitiveType, offset, count);
+            let count = object.shape.vertices.length / 3; // количество триугольников передаваемых для отрисовки.
+            this.gl.drawArrays(primitiveType, offset, count);
         }
     }
 
     drawScene(flag) {
         // Подгоняем размер окна прорисовки под канвас.
-        resizeScene(world.gl.canvas);
-        this.gl.viewport(0, 0, world.gl.canvas.width, world.gl.canvas.height);
+        this.resize(this.gl.canvas);
+        this.gl.viewport(0, 0, this.gl.canvas.width, this.gl.canvas.height);
 
         // Очищаем canvas.
         this.gl.clearColor(30 / 255, 30 / 255, 30 / 255, 0.5);
@@ -283,23 +278,29 @@ class Scene {
         this.gl.useProgram(object.program);
         // Передаем данные в Uniform-переменные.
         // Передача матрицы смещения.
-        let matrixLocation = world.gl.getUniformLocation(world.program, "u_matrix");
-        world.gl.uniformMatrix4fv(matrixLocation, false, figure.getMatrix());
+        let matrixLocation = this.gl.getUniformLocation(object.program, "u_matrix");
+        this.gl.uniformMatrix4fv(matrixLocation, false,
+            object.transform.getMatrix(this.activeCamera.cameraMatrix, this.activeCamera.projectionMatrix));
 
         // Передача матрицы нормалей.
-        let nMatrixLocation = world.gl.getUniformLocation(world.program, "u_normal_matrix");
-        world.gl.uniformMatrix3fv(nMatrixLocation, false, figure.getNormalMatrix());
+        let nMatrixLocation = this.gl.getUniformLocation(object.program, "u_normal_matrix");
+        this.gl.uniformMatrix3fv(nMatrixLocation, false, object.transform.getNormalMatrix());
 
 
-        if (figure.indices) {
-            world.gl.drawElements(world.gl.TRIANGLES, figure.indices.length, world.gl.UNSIGNED_SHORT, 0);
+        if (object.shape.indices) {
+            // Отрисовка сцены.
+            let primitiveType = this.gl.TRIANGLES; // рисовать триугольники.
+            let offset = 0; // начинать с начала буферов
+            let type = this.gl.UNSIGNED_SHORT;
+            let count = object.shape.indices.length / 3; // количество триугольников передаваемых для отрисовки.
+            this.gl.drawElements(primitiveType, count, type, offset);
 
         } else {
             // Отрисовка сцены.
-            let primitiveType = world.gl.TRIANGLES; // рисовать триугольники.
+            let primitiveType = this.gl.TRIANGLES; // рисовать триугольники.
             let offset = 0; // начинать с начала буферов
-            let count = figure.positions.length / 3; // количество триугольников передаваемых для отрисовки.
-            world.gl.drawArrays(primitiveType, offset, count);
+            let count = object.shape.vertices.length / 3; // количество триугольников передаваемых для отрисовки.
+            this.gl.drawArrays(primitiveType, offset, count);
         }
 
 
@@ -308,66 +309,63 @@ class Scene {
     /**
      * Создание и компиляция шейдера.
      *
-     * @param gl Текущий графический контекст.
      * @param type Тип шейдера.
      * @param source {String} Код шейдера.
      * @returns {WebGLShader} Шейдер.
      */
-    createShader(gl, type, source) {
+    createShader(type, source) {
         // Создание шейдера
-        let shader = gl.createShader(type);
+        let shader = this.gl.createShader(type);
 
         // Устанавливаем шейдеру его программный код
-        gl.shaderSource(shader, source);
+        this.gl.shaderSource(shader, source);
 
         // Компилируем шейдер
-        gl.compileShader(shader);
+        this.gl.compileShader(shader);
 
         // В случае успешной компиляции возвращаем шейдер
-        let success = gl.getShaderParameter(shader, gl.COMPILE_STATUS);
+        let success = this.gl.getShaderParameter(shader, this.gl.COMPILE_STATUS);
         if (success) {
             return shader;
         }
 
         // В случае ошибки - сообщаем о ней
-        console.log(gl.getShaderInfoLog(shader));
-        gl.deleteShader(shader);
+        console.log(this.gl.getShaderInfoLog(shader));
+        this.gl.deleteShader(shader);
     }
 
     /**
      * Собираем программу для видеокарты из двух шейдеров.
      *
-     * @param gl Текущий графический контекст.
      * @param vertexShader {WebGLShader} Вершинный шейдер.
      * @param fragmentShader {WebGLShader} Фрагментный шейдер.
      * @returns {WebGLProgram} Программа для видеокарты.
      */
-    createProgram(gl, vertexShader, fragmentShader) {
+    createProgram(vertexShader, fragmentShader) {
         // Создаем программую
-        let program = gl.createProgram();
+        let program = this.gl.createProgram();
 
         // Закрепляем за ней шейдеры.
-        gl.attachShader(program, vertexShader);
-        gl.attachShader(program, fragmentShader);
+        this.gl.attachShader(program, vertexShader);
+        this.gl.attachShader(program, fragmentShader);
 
         // Указываем, что именно это программу надо выполнять в текущем графическом контексте.
-        gl.linkProgram(program);
+        this.gl.linkProgram(program);
 
         // В случае успеха линковки - вернуть программу.
-        let success = gl.getProgramParameter(program, gl.LINK_STATUS);
+        let success = this.gl.getProgramParameter(program, this.gl.LINK_STATUS);
         if (success) {
             return program;
         }
 
         // В случае ошибки - вывести информацию о ней.
-        console.log(gl.getProgramInfoLog(program));
-        gl.deleteProgram(program);
+        console.log(this.gl.getProgramInfoLog(program));
+        this.gl.deleteProgram(program);
     }
 
     /**
      * Заполняет атрибут и буфер даннми.
      *
-     * @param gl Текущий графический контекст.
      * @param program {WebGLProgram} Текущая программа для видеокарты.
      * @param name {String} Наименование атрибута в шейдере.
      * @param data Массив данных для передачи, приведенный к нужному типу.
@@ -377,18 +375,24 @@ class Scene {
      * @param stride {Number} Дополнительное перемещение по данным относительно итерации.
      * @param buf_offset {Number} Элемент массива, с которого начнется первая итерация.
      */
-    fillAttribute(gl, program, name, data, size, type, normalize, stride, buf_offset) {
+    fillAttribute(program, name, data, size, type, normalize, stride, buf_offset) {
         // Инициализируем атрибут и буфер.
-        let attributeLocation = gl.getAttribLocation(program, name);
-        let buffer = gl.createBuffer();
+        let attributeLocation = this.gl.getAttribLocation(program, name);
+        let buffer = this.gl.createBuffer();
 
         // Привязываем атрибут и буфер.
-        gl.bindBuffer(gl.ARRAY_BUFFER, buffer);
-        gl.enableVertexAttribArray(attributeLocation);
+        this.gl.bindBuffer(this.gl.ARRAY_BUFFER, buffer);
+        this.gl.enableVertexAttribArray(attributeLocation);
 
         // Передаем данные в атрибут и в буфер.
-        gl.bufferData(gl.ARRAY_BUFFER, data, gl.STATIC_DRAW);
-        gl.vertexAttribPointer(
+        this.gl.bufferData(this.gl.ARRAY_BUFFER, data, this.gl.STATIC_DRAW);
+        this.gl.vertexAttribPointer(
             attributeLocation, size, type, normalize, stride, buf_offset);
+    }
+
+    fillIndexAttribute(indices) {
+        let indexBuffer = this.gl.createBuffer();
+        this.gl.bindBuffer(this.gl.ELEMENT_ARRAY_BUFFER, indexBuffer);
+        this.gl.bufferData(this.gl.ELEMENT_ARRAY_BUFFER, new Uint16Array(indices), this.gl.STATIC_DRAW);
     }
 }

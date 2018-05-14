@@ -26,7 +26,7 @@ class OBJLoader {
                 v1[2] * v2[0] - v1[0] * v2[2],
                 v1[0] * v2[1] - v1[1] * v2[0]
             ];
-            result = m4.normalize(result);
+            result = Algebra.normalize(result);
 
             this.normals[this.indices[i] * 3] = result[0];
             this.normals[this.indices[i] * 3 + 1] = result[1];

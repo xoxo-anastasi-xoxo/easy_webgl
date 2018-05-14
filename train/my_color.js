@@ -30,4 +30,6 @@ function initColor(color, vertexCount) {
     for (let i = 0; i < vertexCount; ++i) {
         world.groups[world.groups.length - 1].colors.push(currentColor[0], currentColor[1], currentColor[2]);
     }
+
+    console.log(world.groups[world.groups.length - 1].colors);
 }

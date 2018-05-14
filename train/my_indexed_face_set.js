@@ -51,10 +51,6 @@ function initIndexedFaceSet(figure) {
             }
         })();
         // Предварительная подготовка данных
-        // let now = new Date();
-        // while (Number(now) + 100 !== new Date) {
-        //
-        // }
         if (!modelSource)
             throw new Error("Неверно указано имя .obj файла!");
         info = new OBJLoader();

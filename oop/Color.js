@@ -8,15 +8,15 @@ class Color {
      *
      * Получает атрибут "color" - массив - rgb-цвет (значения в пределах 0..255) - по умолчанию Белый
      *
-     * @param color Ссылка на элемент, с которым мы в данный момент работаем.
+     * @param colorElement Ссылка на элемент, с которым мы в данный момент работаем.
      * @param vertexCount {Number} Количество вершин фигуры, которуб необходимо залить цветом.
      */
-    constructor(color, vertexCount) {
+    constructor(colorElement, vertexCount) {
         this.colors = [];
 
         // Получаем из атрибута данные или задаем их по умолчанию.
-        let currentColor = color.attributes["color"] ?
-            color.attributes["color"].value.split(" ").map(value => parseInt(value)) : [255, 255, 255];
+        let currentColor = colorElement.attributes["color"] ?
+            colorElement.attributes["color"].value.split(" ").map(value => parseInt(value)) : [255, 255, 255];
 
         // Выполняем проверку полученных данных.
         Utils.checkArrayAttribute(currentColor, "my-color", "color");

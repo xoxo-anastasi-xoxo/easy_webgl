@@ -19,7 +19,7 @@ class Utils {
      * @param attributeName {string} Имя атрибута, откуда значение пришло.
      */
     static checkArrayAttribute(value, tagName, attributeName) {
-        if (value.length !== 3 || !checkNumber(value[0]) || !checkNumber(value[1]) || !checkNumber(value[2]))
+        if (value.length !== 3 || !Utils.checkNumber(value[0]) || !Utils.checkNumber(value[1]) || !Utils.checkNumber(value[2]))
             throw new Error("Ошибка при задании атрибута " + attributeName + " тега " + tagName +
                 ". Данный атрибут должен принимать значения \"x y z\", где x, y, z - это вещественные числа.");
     }
@@ -33,7 +33,7 @@ class Utils {
      * @param attributeName {string} Имя атрибута, откуда значение пришло.
      */
     static checkNumberAttribute(value, tagName, attributeName) {
-        if (!checkNumber(value))
+        if (!Utils.checkNumber(value))
             throw new Error("Ошибка при задании атрибута " + attributeName + " тега " + tagName +
                 ". Данный атрибут должен принимать значения \"x\", где x - это вещественное число.");
     }
