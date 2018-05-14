@@ -22,6 +22,7 @@ class DirectedLight {
             this.lightDirection =
                 this.directedLightElement.attributes["direction"].value.split(" ").map(value => parseFloat(value));
 
+
         // Выполняем проверку полученных данных.
         Utils.checkArrayAttribute(this.fonLightColor, "my-directed-light", "fon-light-color");
         Utils.checkArrayAttribute(this.directedLightColor, "my-directed-light", "directed-light-color");

@@ -41,4 +41,4 @@ onmessage = function(e) {
         normals,
         indices
     });
-}
+};

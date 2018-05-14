@@ -106,6 +106,10 @@ class Scene {
         if (!this.gl)
             throw new Error("В данном браузере недоступен WebGL");
 
+        this.fragmentShader = this.createShader(this.gl.FRAGMENT_SHADER, this.fragmentShaderSource);
+        this.vertexShader = this.createShader(this.gl.VERTEX_SHADER, this.vertexShaderSource);
+        this.program = this.createProgram(this.vertexShader, this.fragmentShader);
+
         // Проверяем на наличие камеры.
         if (!this.sceneElement.getElementsByTagName("my-camera").length)
             throw new Error("Отсутствует дочерний элемент - my-camera");
@@ -155,25 +159,16 @@ class Scene {
 
 
     addObject({transform, shape, appearance}) {
-        let fragmentShader = this.createShader(this.gl.FRAGMENT_SHADER, this.fragmentShaderSource);
-        let vertexShader = this.createShader(this.gl.VERTEX_SHADER, this.vertexShaderSource);
-        let program = this.createProgram(vertexShader, fragmentShader);
         let obj = {
             transform,
             shape,
-            appearance,
-            fragmentShader,
-            vertexShader,
-            program
+            appearance
         };
         this.objects.push(obj);
-        this.drawNewObject(this.objects[this.objects.length - 1]);
+        this.drawScene();
     }
 
     drawNewObject(object) {
-        // Указываем, какую программу использовать.
-        this.gl.useProgram(object.program);
-
         // Передаем данные а атрибуты и буферы.
         // Передаем позиции вершин фигуры.
         let size = 3;              // 3 компоненты на итерацию
@@ -181,7 +176,7 @@ class Scene {
         let normalize = false;     // не нормализовать данные
         let stride = 0;            // 0 = перемещаться на size * sizeof(type) каждую итерацию для получения следующего положения
         let buf_offset = 0;        // начинать с начала буфера
-        this.fillAttribute(object.program, "a_position", new Float32Array(object.shape.vertices),
+        this.fillAttribute(this.program, "a_position", new Float32Array(object.shape.vertices),
             size, type, normalize, stride, buf_offset);
 
 
@@ -191,7 +186,7 @@ class Scene {
         normalize = false;       // не нормализовать данные
         stride = 0;              // 0 = перемещаться на size * sizeof(type) каждую итерацию для получения следующего положения
         buf_offset = 0;          // начинать с начала буфера
-        this.fillAttribute(object.program, "a_normal", new Float32Array(object.shape.normals),
+        this.fillAttribute(this.program, "a_normal", new Float32Array(object.shape.normals),
             size, type, normalize, stride, buf_offset);
 
         // Передаем цвета вершин фигуры.
@@ -200,38 +195,18 @@ class Scene {
         normalize = true;               // нормализовать данные (конвертировать из 0-255 в 0-1)
         stride = 0;                     // 0 = перемещаться на size * sizeof(type) каждую итерацию для получения следующего положения
         buf_offset = 0;                 // начинать с начала буфера
-        this.fillAttribute(object.program, "a_color", new Uint8Array(object.appearance.colors),
+        this.fillAttribute(this.program, "a_color", new Uint8Array(object.appearance.colors),
             size, type, normalize, stride, buf_offset);
 
         // Передаем данные в Uniform-переменные.
         // Передача матрицы смещения.
-        let matrixLocation = this.gl.getUniformLocation(object.program, "u_matrix");
+        let matrixLocation = this.gl.getUniformLocation(this.program, "u_matrix");
         this.gl.uniformMatrix4fv(matrixLocation, false,
             object.transform.getMatrix(this.activeCamera.cameraMatrix, this.activeCamera.projectionMatrix));
 
         // Передача матрицы нормалей.
-        let nMatrixLocation = this.gl.getUniformLocation(object.program, "u_normal_matrix");
+        let nMatrixLocation = this.gl.getUniformLocation(this.program, "u_normal_matrix");
         this.gl.uniformMatrix3fv(nMatrixLocation, false, object.transform.getNormalMatrix());
-
-        // Передача направления освещения.
-        let lDirectionLocation =
-            this.gl.getUniformLocation(object.program, "u_light_direction");
-        this.gl.uniform3fv(lDirectionLocation, Algebra.normalize(this.light.lightDirection));
-
-        // Передача флага использования света.
-        let useLightLocation =
-            this.gl.getUniformLocation(object.program, "u_use_light");
-        this.gl.uniform1i(useLightLocation, Number(this.light));
-
-        // Передача цвета фонового освещения.
-        let fColorLocation =
-            this.gl.getUniformLocation(object.program, "u_fon_light_color");
-        this.gl.uniform3fv(fColorLocation, this.light.fonLightColor);
-
-        // Передача цвета направленного освещения.
-        let dColorLocation =
-            this.gl.getUniformLocation(object.program, "u_directed_light_color");
-        this.gl.uniform3fv(dColorLocation, this.light.directedLightColor);
 
         if (object.shape.indices) {
             // Передаем индексы поверхностей фигуры.
@@ -263,46 +238,33 @@ class Scene {
         // Очищаем буферы цветов и глубины.
         this.gl.clear(this.gl.COLOR_BUFFER_BIT | this.gl.DEPTH_BUFFER_BIT);
 
-        if (this.objects.length === 1)
-        this.drawObject(this.objects[0]);
+        // Указываем, какую программу использовать.
+        this.gl.useProgram(this.program);
+
+        // Передача направления освещения.
+        let lDirectionLocation =
+            this.gl.getUniformLocation(this.program, "u_light_direction");
+        this.gl.uniform3fv(lDirectionLocation, Algebra.normalize(this.light.lightDirection));
+
+        // Передача флага использования света.
+        let useLightLocation =
+            this.gl.getUniformLocation(this.program, "u_use_light");
+        this.gl.uniform1i(useLightLocation, Number(!!this.light));
+
+        // Передача цвета фонового освещения.
+        let fColorLocation =
+            this.gl.getUniformLocation(this.program, "u_fon_light_color");
+        this.gl.uniform3fv(fColorLocation, this.light.fonLightColor);
+
+        // Передача цвета направленного освещения.
+        let dColorLocation =
+            this.gl.getUniformLocation(this.program, "u_directed_light_color");
+        this.gl.uniform3fv(dColorLocation, this.light.directedLightColor);
 
         // Запускаем прорисовку каждой фигуры сцены по порядку.
-        for (let obj of this.objects) {
+            for (let obj of this.objects) {
                 this.drawNewObject(obj);
-        }
-    }
-
-    drawObject(object) {
-        // Указываем, какую программу использовать.
-        this.gl.useProgram(object.program);
-        // Передаем данные в Uniform-переменные.
-        // Передача матрицы смещения.
-        let matrixLocation = this.gl.getUniformLocation(object.program, "u_matrix");
-        this.gl.uniformMatrix4fv(matrixLocation, false,
-            object.transform.getMatrix(this.activeCamera.cameraMatrix, this.activeCamera.projectionMatrix));
-
-        // Передача матрицы нормалей.
-        let nMatrixLocation = this.gl.getUniformLocation(object.program, "u_normal_matrix");
-        this.gl.uniformMatrix3fv(nMatrixLocation, false, object.transform.getNormalMatrix());
-
-
-        if (object.shape.indices) {
-            // Отрисовка сцены.
-            let primitiveType = this.gl.TRIANGLES; // рисовать триугольники.
-            let offset = 0; // начинать с начала буферов
-            let type = this.gl.UNSIGNED_SHORT;
-            let count = object.shape.indices.length / 3; // количество триугольников передаваемых для отрисовки.
-            this.gl.drawElements(primitiveType, count, type, offset);
-
-        } else {
-            // Отрисовка сцены.
-            let primitiveType = this.gl.TRIANGLES; // рисовать триугольники.
-            let offset = 0; // начинать с начала буферов
-            let count = object.shape.vertices.length / 3; // количество триугольников передаваемых для отрисовки.
-            this.gl.drawArrays(primitiveType, offset, count);
-        }
-
-
+            }
     }
 
     /**

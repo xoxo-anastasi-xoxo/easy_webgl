@@ -9,7 +9,7 @@ class IndexedFaceSet {
             //Браузер пользователя имеет поддержку web worker
             let blobCode = "onmessage = function(e) {\
             \
-            importScripts('OBJLoader.js', 'Algebra.js');\
+            importScripts('D:\\Projects\\WebStormProjects\\easy_webgl\\oop\\OBJLoader.js', 'D:\\Projects\\WebStormProjects\\easy_webgl\\oop\\Algebra.js');\
             \
             let modelSource;\
             function getXmlHttp() {\
@@ -59,8 +59,8 @@ class IndexedFaceSet {
 
             let blobUrl = new Blob ([blobCode], {type: 'application/javascript'});
 
-            let worker = new Worker(URL.createObjectURL(blobUrl));
-            // let worker = new Worker("task.js");
+            // let worker = new Worker(URL.createObjectURL(blobUrl));
+            let worker = new Worker("task.js");
             worker.onmessage = function (e) {
                 func(e.data);
             };

@@ -33,14 +33,14 @@
     <!--</my-shape>-->
     <!--</my-transform>-->
 
-    <my-transform scale=".2 .2 .2" translation="0 0 -10">
-        <my-shape>
-            <my-indexed-face-set model="../train/tests/low-poly-mill.obj"></my-indexed-face-set>
-            <my-appearance>
-                <my-color color="255 255 255"></my-color>
-            </my-appearance>
-        </my-shape>
-    </my-transform>
+    <!--<my-transform scale=".2 .2 .2" translation="0 0 -10">-->
+    <!--<my-shape>-->
+    <!--<my-indexed-face-set model="../train/tests/low-poly-mill.obj"></my-indexed-face-set>-->
+    <!--<my-appearance>-->
+    <!--<my-color color="255 255 255"></my-color>-->
+    <!--</my-appearance>-->
+    <!--</my-shape>-->
+    <!--</my-transform>-->
 
     <!--<my-transform scale=".2 .2 .2" translation="0 0 -10">-->
     <!--<my-shape>-->
@@ -52,31 +52,31 @@
     <!--</my-transform>-->
 
     <!--<my-transform translation="0 0 -10">-->
-    <!--<my-shape>-->
-    <!--<my-indexed-face-set model="./tests/input.obj"></my-indexed-face-set>-->
-    <!--<my-appearance>-->
-    <!--<my-color color="255 0 0"></my-color>-->
-    <!--</my-appearance>-->
-    <!--</my-shape>-->
+        <!--<my-shape>-->
+            <!--<my-indexed-face-set model="../train/tests/input.obj"></my-indexed-face-set>-->
+            <!--<my-appearance>-->
+                <!--<my-color color="255 0 0"></my-color>-->
+            <!--</my-appearance>-->
+        <!--</my-shape>-->
     <!--</my-transform>-->
 
     <!--<my-transform  scale=".05 .05 .05" translation="0 0 -10">-->
     <!--<my-shape>-->
-    <!--<my-indexed-face-set model="./tests/sydney_opera.obj"></my-indexed-face-set>-->
+    <!--<my-indexed-face-set model="../train/tests/sydney_opera.obj"></my-indexed-face-set>-->
     <!--<my-appearance>-->
     <!--<my-color color="0 0 255"></my-color>-->
     <!--</my-appearance>-->
     <!--</my-shape>-->
     <!--</my-transform>-->
 
-    <!--<my-transform translation="0 0 -10">-->
-    <!--<my-shape>-->
-    <!--<my-indexed-face-set model="./tests/Bench_LowRes.obj"></my-indexed-face-set>-->
-    <!--<my-appearance>-->
-    <!--<my-color color="0 0 255"></my-color>-->
-    <!--</my-appearance>-->
-    <!--</my-shape>-->
-    <!--</my-transform>-->
+    <my-transform translation="0 0 -10">
+    <my-shape>
+    <my-indexed-face-set model="../train/tests/Bench_LowRes.obj"></my-indexed-face-set>
+    <my-appearance>
+    <my-color color="0 0 255"></my-color>
+    </my-appearance>
+    </my-shape>
+    </my-transform>
 
     <!--<my-transform translation="-40 0 -100">-->
     <!--<my-shape>-->
@@ -112,11 +112,11 @@
 <script src="Color.js"></script>
 <script type="text/javascript">
     let scene;
-for (let canva of document.getElementsByTagName("canvas")) {
-    if (canva.attributes["is"].value === "my-scene") {
-        scene = new Scene(canva);
+    for (let canva of document.getElementsByTagName("canvas")) {
+        if (canva.attributes["is"].value === "my-scene") {
+            scene = new Scene(canva);
+        }
     }
-}
 </script>
 </body>
 </html>

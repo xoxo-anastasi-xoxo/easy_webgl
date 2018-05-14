@@ -43,7 +43,6 @@ class Camera {
 
         // Определяем способ навигации по сцене.
         function getShift(shift) {
-            console.log("getShift: ", shift)
             let rot = Algebra.identity();
             rot = Algebra.yRotate(rot, this.cameraRotation[1]);
             rot = Algebra.xRotate(rot, this.cameraRotation[0]);

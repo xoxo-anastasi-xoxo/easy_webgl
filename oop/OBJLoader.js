@@ -7,7 +7,7 @@ class OBJLoader {
 
     calculateNormals() {
         if (!(this.vertices.length && this.indices.length))
-            return [];
+            return;
 
         this.normals = new Array(this.vertices.length);
         for (let i = 0; i < this.indices.length; i += 3) {
@@ -153,18 +153,23 @@ class OBJLoader {
                 // ['16/92', '14/101', '1/69'] - даны вершина и текстура
                 // ['16', '14', '1'] - дана только вершина
 
+                // let data = elements[0].split('/');
+                // let hash = (data.length > 2) ? data[0] + "/" + data[2] : data[0];
+                // let first = (unpacked.heshes[hash]) ? unpacked.heshes[hash] : parseInt(unpacked.verts.length / 3);
+                let current;
 
-                let data = elements[0].split('/');
-                let hash = (data.length > 2) ? data[0] + "/" + data[2] : data[0];
-                let first = (unpacked.heshes[hash]) ? unpacked.heshes[hash] : parseInt(unpacked.verts.length / 3);
-                let current, last;
+                let newElements = [];
 
-                for (let j = 0; j < elements.length; ++j) {
+                for (let k = 2; k < elements.length; ++k) {
+                    newElements.push(elements[0], elements[k-1], elements[k]);
+                }
 
-                    data = elements[j].split('/');
+                for (let j = 0; j < newElements.length; ++j) {
+
+                    let data = newElements[j].split('/');
 
                     if (data.length > 2) {
-                        hash = data[0] + "/" + data[2];
+                        let hash = data[0] + "/" + data[2];
                         if (unpacked.heshes[hash]) {
                             current = unpacked.heshes[hash];
                         } else {
@@ -193,13 +198,7 @@ class OBJLoader {
                             verticesList[(parseInt(data[0]) - 1) * 3 + 2]
                         );
                     }
-                    if (j < 3) {
-                        unpacked.indices.push(current);
-                    } else {
-                        unpacked.indices.push(first, last, current);
-                    }
-
-                    last = current;
+                    unpacked.indices.push(current);
                 }
             }
         }

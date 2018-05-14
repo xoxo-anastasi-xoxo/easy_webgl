@@ -33,9 +33,9 @@ class Transform {
         this.rotation[1] += Utils.getRadians(anglesInDegrees[1]);
         this.rotation[2] += Utils.getRadians(anglesInDegrees[2]);
 
-        this.scale[0] += scale[0];
-        this.scale[1] += scale[1];
-        this.scale[2] += scale[2];
+        this.scale[0] *= scale[0];
+        this.scale[1] *= scale[1];
+        this.scale[2] *= scale[2];
 
         // Создаем фигур с текущими параметрами.
         for (let trans of this.transformElement.getElementsByTagName("my-transform")) {
