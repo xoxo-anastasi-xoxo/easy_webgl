@@ -72,25 +72,25 @@ function initCamera(scene) {
                     for (let fig of world.groups) {
                         fig.anglesInDegrees[1] += 5;
                     }
-                    drawScene();
+                    redrawScene();
                     break;
                 case 37:
                     for (let fig of world.groups) {
                         fig.anglesInDegrees[1] -= 5;
                     }
-                    drawScene();
+                    redrawScene();
                     break;
                 case 38:
                     for (let fig of world.groups) {
                         fig.anglesInDegrees[0] -= 5;
                     }
-                    drawScene();
+                    redrawScene();
                     break;
                 case 40:
                     for (let fig of world.groups) {
                         fig.anglesInDegrees[0] += 5;
                     }
-                    drawScene();
+                    redrawScene();
                     break;
                 case 33:
                     // pageup
@@ -100,7 +100,7 @@ function initCamera(scene) {
                     world.cameraPosition[2] += shift[2];
 
                     setCameraParams();
-                    drawScene();
+                    redrawScene();
                     break;
                 case 34:
                     // pagedown
@@ -110,7 +110,7 @@ function initCamera(scene) {
                     world.cameraPosition[2] += shift[2];
 
                     setCameraParams();
-                    drawScene();
+                    redrawScene();
                     break;
             }
 
@@ -220,17 +220,4 @@ function setCameraParams() {
     world.cameraMatrix = m4.yRotate(world.cameraMatrix, getRadians(world.cameraYAngleDegrees));
     world.cameraMatrix = m4.xRotate(world.cameraMatrix, getRadians(world.cameraXAngleDegrees));
     world.cameraMatrix = m4.inverse(world.cameraMatrix);
-
-    // let translationMatrix = m4.translation(cameraTranslation[0],cameraTranslation[1],cameraTranslation[2]);
-    // translationMatrix = m4.inverse(translationMatrix);
-    //
-    // let rotationMatrix = m4.xRotation(getRadians(cameraRotation[0]));
-    // rotationMatrix = m4.yRotate(rotationMatrix, getRadians(cameraRotation[1]));
-    // rotationMatrix = m4.zRotate(rotationMatrix, getRadians(cameraRotation[2]));
-    // rotationMatrix = m4.inverse(rotationMatrix);
-    //
-    //
-    // world.cameraMatrix = m4.multiply(world.cameraMatrix, translationMatrix);
-    // world.cameraMatrix = m4.multiply(rotationMatrix, world.cameraMatrix);
-
 }

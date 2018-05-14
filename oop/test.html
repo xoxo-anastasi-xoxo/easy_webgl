@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>Да будет ООП</title>
+    <style>
+        /*параметры заданы для удобства*/
+        body {
+            margin: 0;
+        }
+
+        canvas {
+            width: 100vw;
+            height: 100vh;
+            display: block;
+        }
+    </style>
+</head>
+<body>
+
+<canvas is="my-scene" id="scene" fon-color="100 100 100 200">
+    <my-directed-light directed-light-color="200 200 200" fon-light-color="100 100 100"
+                       direction="0 0 -1"></my-directed-light>
+    <!--<my-camera camera-position="20 0 -150" camera-y-angle="0" camera-x-angle="0"></my-camera>-->
+    <my-camera navigation-type="object" camera-position="0 0 30"></my-camera>
+
+    <!--<my-transform scale="5 5 5" translation="0 0 -10">-->
+    <!--<my-shape>-->
+    <!--<my-indexed-face-set model="./tests/Wolf_obj.obj"></my-indexed-face-set>-->
+    <!--<my-appearance>-->
+    <!--<my-color color="255 255 255"></my-color>-->
+    <!--</my-appearance>-->
+    <!--</my-shape>-->
+    <!--</my-transform>-->
+
+    <!--<my-transform scale=".2 .2 .2" translation="0 0 -10">-->
+    <!--<my-shape>-->
+    <!--<my-indexed-face-set model="../train/tests/low-poly-mill.obj"></my-indexed-face-set>-->
+    <!--<my-appearance>-->
+    <!--<my-color color="255 255 255"></my-color>-->
+    <!--</my-appearance>-->
+    <!--</my-shape>-->
+    <!--</my-transform>-->
+
+    <!--<my-transform scale=".2 .2 .2" translation="0 0 -10">-->
+    <!--<my-shape>-->
+    <!--<my-indexed-face-set model="./tests/bezierscene.obj"></my-indexed-face-set>-->
+    <!--<my-appearance>-->
+    <!--<my-color color="255 255 255"></my-color>-->
+    <!--</my-appearance>-->
+    <!--</my-shape>-->
+    <!--</my-transform>-->
+
+    <!--<my-transform translation="0 0 -10">-->
+    <!--<my-shape>-->
+    <!--<my-indexed-face-set model="../train/tests/input.obj"></my-indexed-face-set>-->
+    <!--<my-appearance>-->
+    <!--<my-color color="255 0 0"></my-color>-->
+    <!--</my-appearance>-->
+    <!--</my-shape>-->
+    <!--</my-transform>-->
+
+    <!--<my-transform  scale=".05 .05 .05" translation="0 0 -10">-->
+    <!--<my-shape>-->
+    <!--<my-indexed-face-set model="../train/tests/sydney_opera.obj"></my-indexed-face-set>-->
+    <!--<my-appearance>-->
+    <!--<my-color color="0 0 255"></my-color>-->
+    <!--</my-appearance>-->
+    <!--</my-shape>-->
+    <!--</my-transform>-->
+
+    <my-transform translation="0 0 -10">
+        <my-shape>
+            <my-indexed-face-set model="../train/tests/Bench_LowRes.obj"></my-indexed-face-set>
+            <my-appearance>
+                <my-color color="0 0 255"></my-color>
+            </my-appearance>
+        </my-shape>
+    </my-transform>
+
+    <!--<my-transform translation="-40 0 -100">-->
+    <!--<my-shape>-->
+    <!--<my-box></my-box>-->
+    <!--<my-appearance>-->
+    <!--<my-color color="255 0 0"></my-color>-->
+    <!--</my-appearance>-->
+    <!--</my-shape>-->
+    <!--</my-transform>-->
+
+    <!--<my-transform translation="40 0 -100">-->
+    <!--<my-shape>-->
+    <!--<my-box size="10 20 30"></my-box>-->
+    <!--<my-appearance>-->
+    <!--<my-color color="0 0 255"></my-color>-->
+    <!--</my-appearance>-->
+    <!--</my-shape>-->
+    <!--</my-transform>-->
+</canvas>
+
+<script src="Algebra.js"></script>
+<script src="Utils.js"></script>
+<script src="OBJLoader.js"></script>
+
+<script src="Scene.js"></script>
+<script src="DirectedLight.js"></script>
+<script src="Camera.js"></script>
+<script src="Transform.js"></script>
+<script src="Shape.js"></script>
+<script src="Box.js"></script>
+<script src="IndexedFaceSet.js"></script>
+<script src="Appearance.js"></script>
+<script src="Color.js"></script>
+<script type="text/javascript">
+    let scene;
+    for (let canva of document.getElementsByTagName("canvas")) {
+        if (canva.attributes["is"].value === "my-scene") {
+            scene = new Scene(canva);
+        }
+    }
+</script>
+</body>
+</html>

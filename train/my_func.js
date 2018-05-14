@@ -89,6 +89,9 @@ function fillAttribute(gl, program, name, data, size, type, normalize, stride, b
  * Отрисовывает сцену.
  */
 function drawScene() {
+    let prev = Number(new Date());
+    console.log("стартуем лоадить сцену", prev - new Date());
+    prev = new Date();
     // Подгоняем размер окна прорисовки под канвас.
     resizeScene(world.gl.canvas);
     world.gl.viewport(0, 0, world.gl.canvas.width, world.gl.canvas.height);
@@ -103,8 +106,8 @@ function drawScene() {
 
     // Запускаем прорисовку каждой фигуры сцены по порядку.
     for (let figure of world.groups) {
-        console.log("zagruzca...");
-
+        console.log("zagruzca вершин...", prev - new Date());
+        prev = new Date();
 
         // Передаем данные а атрибуты и буферы.
         // Передаем позиции вершин фигуры.
@@ -116,6 +119,9 @@ function drawScene() {
         fillAttribute(world.gl, world.program, "a_position", new Float32Array(figure.positions),
             size, type, normalize, stride, buf_offset);
 
+        console.log("zagruzca нормалей...", prev - new Date());
+        prev = new Date();
+
         // Передаем координаты нормалей фигуры.
         size = 3;                // 3 компоненты на итерацию
         type = world.gl.FLOAT;   // наши данные - 32-битные числа с плавающей точкой
@@ -125,6 +131,8 @@ function drawScene() {
         fillAttribute(world.gl, world.program, "a_normal", new Float32Array(figure.normals),
             size, type, normalize, stride, buf_offset);
 
+        console.log("zagruzca цветов...", prev - new Date());
+        prev = new Date();
         // Передаем цвета вершин фигуры.
         size = 3;                       // 3 компоненты на итерацию
         type = world.gl.UNSIGNED_BYTE;  // данные - 8-битные беззнаковые целые
@@ -133,6 +141,9 @@ function drawScene() {
         buf_offset = 0;                 // начинать с начала буфера
         fillAttribute(world.gl, world.program, "a_color", new Uint8Array(figure.colors),
             size, type, normalize, stride, buf_offset);
+
+        console.log("zagruzca разных юниформ переменных...", prev - new Date());
+        prev = new Date();
 
         // Передаем данные в Uniform-переменные.
         // Передача матрицы смещения.
@@ -164,6 +175,9 @@ function drawScene() {
         world.gl.uniform3fv(dColorLocation, world.directedLightColor);
 
         if (figure.indices) {
+            console.log("zagruzca индексов...", prev - new Date());
+            prev = new Date();
+
             // создание буфера индексов
             let indexBuffer = world.gl.createBuffer();
             world.gl.bindBuffer(world.gl.ELEMENT_ARRAY_BUFFER, indexBuffer);
@@ -171,10 +185,109 @@ function drawScene() {
             // указываем число линий. это число равно числу индексов
             indexBuffer.numberOfItems = figure.indices.length;
 
-            console.log("here");
+            console.log("отрисовка", prev - new Date());
+            prev = new Date();
+
             world.gl.drawElements(world.gl.TRIANGLES, indexBuffer.numberOfItems, world.gl.UNSIGNED_SHORT, 0);
+            console.log("done", prev - new Date());
+
         } else {
-            console.log("there");
+            // Отрисовка сцены.
+            let primitiveType = world.gl.TRIANGLES; // рисовать триугольники.
+            let offset = 0; // начинать с начала буферов
+            let count = figure.positions.length / 3; // количество триугольников передаваемых для отрисовки.
+            world.gl.drawArrays(primitiveType, offset, count);
+        }
+
+    }
+}
+
+function redrawScene() {
+    // Подгоняем размер окна прорисовки под канвас.
+    resizeScene(world.gl.canvas);
+    world.gl.viewport(0, 0, world.gl.canvas.width, world.gl.canvas.height);
+
+    // Очищаем canvas.
+    world.gl.clearColor(30/255, 30/255, 30/255, 0.5);
+    // Очищаем буферы цветов и глубины.
+    world.gl.clear(world.gl.COLOR_BUFFER_BIT | world.gl.DEPTH_BUFFER_BIT);
+
+    // Указываем, какую программу использовать.
+    // world.gl.useProgram(world.program);
+
+    // Запускаем прорисовку каждой фигуры сцены по порядку.
+    for (let figure of world.groups) {
+
+        // Передаем данные а атрибуты и буферы.
+        // Передаем позиции вершин фигуры.
+        // let size = 3;              // 3 компоненты на итерацию
+        // let type = world.gl.FLOAT; // наши данные - 32-битные числа с плавающей точкой
+        // let normalize = false;     // не нормализовать данные
+        // let stride = 0;            // 0 = перемещаться на size * sizeof(type) каждую итерацию для получения следующего положения
+        // let buf_offset = 0;        // начинать с начала буфера
+        // fillAttribute(world.gl, world.program, "a_position", new Float32Array(figure.positions),
+        //     size, type, normalize, stride, buf_offset);
+
+        // Передаем координаты нормалей фигуры.
+        // size = 3;                // 3 компоненты на итерацию
+        // type = world.gl.FLOAT;   // наши данные - 32-битные числа с плавающей точкой
+        // normalize = false;       // не нормализовать данные
+        // stride = 0;              // 0 = перемещаться на size * sizeof(type) каждую итерацию для получения следующего положения
+        // buf_offset = 0;          // начинать с начала буфера
+        // fillAttribute(world.gl, world.program, "a_normal", new Float32Array(figure.normals),
+        //     size, type, normalize, stride, buf_offset);
+
+        // Передаем цвета вершин фигуры.
+        // size = 3;                       // 3 компоненты на итерацию
+        // type = world.gl.UNSIGNED_BYTE;  // данные - 8-битные беззнаковые целые
+        // normalize = true;               // нормализовать данные (конвертировать из 0-255 в 0-1)
+        // stride = 0;                     // 0 = перемещаться на size * sizeof(type) каждую итерацию для получения следующего положения
+        // buf_offset = 0;                 // начинать с начала буфера
+        // fillAttribute(world.gl, world.program, "a_color", new Uint8Array(figure.colors),
+        //     size, type, normalize, stride, buf_offset);
+
+        // Передаем данные в Uniform-переменные.
+        // Передача матрицы смещения.
+        let matrixLocation = world.gl.getUniformLocation(world.program, "u_matrix");
+        world.gl.uniformMatrix4fv(matrixLocation, false, figure.getMatrix());
+
+        // Передача матрицы нормалей.
+        let nMatrixLocation = world.gl.getUniformLocation(world.program, "u_normal_matrix");
+        world.gl.uniformMatrix3fv(nMatrixLocation, false, figure.getNormalMatrix());
+
+        // Передача направления освещения.
+        // let lDirectionLocation =
+        //     world.gl.getUniformLocation(world.program, "u_light_direction");
+        // world.gl.uniform3fv(lDirectionLocation, m4.normalize(world.lightDirection));
+
+        // Передача флага использования света.
+        // let useLightLocation =
+        //     world.gl.getUniformLocation(world.program, "u_use_light");
+        // world.gl.uniform1i(useLightLocation, Number(world.isLightUsed));
+
+        // Передача цвета фонового освещения.
+        // let fColorLocation =
+        //     world.gl.getUniformLocation(world.program, "u_fon_light_color");
+        // world.gl.uniform3fv(fColorLocation, world.fonLightColor);
+
+        // Передача цвета направленного освещения.
+        // let dColorLocation =
+        //     world.gl.getUniformLocation(world.program, "u_directed_light_color");
+        // world.gl.uniform3fv(dColorLocation, world.directedLightColor);
+
+        if (figure.indices) {
+            // создание буфера индексов
+            // let indexBuffer = world.gl.createBuffer();
+            // world.gl.bindBuffer(world.gl.ELEMENT_ARRAY_BUFFER, indexBuffer);
+            // world.gl.bufferData(world.gl.ELEMENT_ARRAY_BUFFER, new Uint16Array(figure.indices), world.gl.STATIC_DRAW);
+            // // указываем число линий. это число равно числу индексов
+            // indexBuffer.numberOfItems = figure.indices.length;
+
+
+
+            world.gl.drawElements(world.gl.TRIANGLES,figure.indices.length, world.gl.UNSIGNED_SHORT, 0);
+
+        } else {
             // Отрисовка сцены.
             let primitiveType = world.gl.TRIANGLES; // рисовать триугольники.
             let offset = 0; // начинать с начала буферов

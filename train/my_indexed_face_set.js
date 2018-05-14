@@ -51,15 +51,12 @@ function initIndexedFaceSet(figure) {
             }
         })();
         // Предварительная подготовка данных
-        // let now = new Date();
-        // while (Number(now) + 100 !== new Date) {
-        //
-        // }
         if (!modelSource)
             throw new Error("Неверно указано имя .obj файла!");
-        info = new Mesh(modelSource);
+        info = new OBJLoader();
+        info.parse(modelSource);
         positions = info.vertices;
-        normals = info.vertexNormals;
+        normals = info.normals;
 
         let indices = info.indices;
         world.groups[world.groups.length - 1].indices = [...indices];
