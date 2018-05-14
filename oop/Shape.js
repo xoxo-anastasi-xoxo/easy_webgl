@@ -1,19 +1,25 @@
+/**
+ * Тег my-shape. Определяет геометрию.
+ */
 class Shape {
     /**
-     * Инициализирует вершинный шейдер, используя данные из атрибутов тега my-shapeElement.
+     * Запускает асинхронную инициализацию дочерних элементов.
      *
-     * @param shapeElement Ссылка на элемент, с которым мы в данный момент работаем.
+     * @param shapeElement Ссылка на DOM-элемент, который иллюстрирует этот объект.
+     * @param transform {Transform} Данные о положении фигуры в пространстве сцены.
+     * @param scene {Scene} Трехмерная сцена, в которой определен объект.
      */
     static init(shapeElement, transform, scene) {
-
-        // Инициализируем форму фигуры.
+        // Инициализируем форму фигуры и ее внешний вид.
         let indexedFaceSetElement = shapeElement.getElementsByTagName("my-indexed-face-set")[0];
         let boxElement = shapeElement.getElementsByTagName("my-box")[0];
         let appearanceElement = shapeElement.getElementsByTagName("my-appearance")[0];
 
+        // Проверяем наличие обязательного элемента.
         if (!appearanceElement)
             throw new Error("Отсутствует обязательный тег my-appearance!");
 
+        // Формируем колбек для асинхронной загрузки.
         function func(shape) {
             let promise = new Promise(function (resolve, reject) {
                 resolve({
@@ -28,6 +34,7 @@ class Shape {
             })
         }
 
+        // Запускаем асинхронную загрузку найденного дочернего элемента.
         let promise;
         if (indexedFaceSetElement)
             promise = new Promise(function () {

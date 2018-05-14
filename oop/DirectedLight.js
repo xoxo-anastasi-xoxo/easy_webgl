@@ -1,16 +1,57 @@
+/**
+ * Тег my-directed-light. Определяет направленный свет для трехмерной сцены.
+ */
 class DirectedLight {
+    /**
+     * Создает экземпляр DirectedLight.
+     * @constructor
+     * @this  {DirectedLight}
+     *
+     * @param directedLightElement Ссылка на DOM-элемент, который иллюстрирует этот объект.
+     * @param scene {Scene} Трехмерная сцена, в которой определен объект.
+     */
     constructor(directedLightElement, scene) {
+        // Определим все неодходимые поля.
+        /**
+         * Ссылка на DOM-элемент, который иллюстрирует этот объект.
+         */
         this.directedLightElement = directedLightElement;
+        /**
+         * Трехмерная сцена, в которой определен объект.
+         * @type {Scene}
+         */
         this.scene = scene;
 
-        // Задаем необходимым параметрам значения по умолчанию.
+        /**
+         * Цвет фонового освещения.
+         * @type {number[]}
+         */
         this.fonLightColor = [100, 100, 100].map(value => value / 255);
+        /**
+         * Цвет направленного освещения.
+         * @type {number[]}
+         */
         this.directedLightColor = [200, 200, 200].map(value => value / 255);
+        /**
+         * Направление света.
+         * @type {number[]}
+         */
         this.lightDirection = [0, 0, -1];
 
+        // Запустим инициализацию полей атрибутами.
         this.init();
     }
 
+    /**
+     * Инициализирует объект, используя данные атрибутов.
+     *
+     * Если есть устанавливает параметры этого освещения:
+     *      - атрибут "fon-light-color" - массив - rgb-цвет фонового освещения (значения в пределах 0..255)
+     *                                  - по умолчанию "100 100 100";
+     *      - атрибут "directed-light-color" - массив - rgb-цвет направленного освещения(значения в пределах 0..255)
+     *                                  - по умолчанию "200 200 200";
+     *      - атрибут "direction" - массив - направление направленного освещения - по умолчанию "0, 0, -1".
+     */
     init() {
         if (this.directedLightElement.attributes["fon-light-color"])
             this.fonLightColor =

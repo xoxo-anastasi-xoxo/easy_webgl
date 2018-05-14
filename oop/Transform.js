@@ -1,15 +1,52 @@
+/**
+ * Тег my-transform. Определяет положение геометрии в пространстве сцены.
+ */
 class Transform {
-    // получает элемент трансформ и оболочку сцены
+    /**
+     * Создает экземпляр Transform.
+     * @constructor
+     * @this  {Transform}
+     *
+     * @param transformElement Ссылка на DOM-элемент, который иллюстрирует этот объект.
+     * @param scene {Scene} Трехмерная сцена, в которой определен объект.
+     * @param info Данные о дополнительном смещении, если есть родительский Transform.
+     */
     constructor(transformElement, scene, info = {translation: [0, 0, 0], rotation: [0, 0, 0], scale: [1, 1, 1]}) {
+        /**
+         * Ссылка на DOM-элемент, который иллюстрирует этот объект.
+         */
         this.transformElement = transformElement;
+        /**
+         * Трехмерная сцена, в которой определен объект.
+         */
         this.scene = scene;
+        /**
+         * Перенос оюъекта относительно начала координат сцены.
+         * @type {number[]}
+         */
         this.translation = info.translation;
+        /**
+         * Поворот объекта относительно его осей X, Y, Z.
+         * @type {number[]}
+         */
         this.rotation = info.rotation;
+        /**
+         * Масштабирование объекта относительно его осей X, Y, Z.
+         * @type {number[]}
+         */
         this.scale = info.scale;
 
+        // Запустим инициализацию полей атрибутами.
         this.init();
     }
 
+    /**
+     * Инициализирует данные, используя атрибуты тега my-transform.
+     * Атрибуты:
+     *          translation - массив - определяет смещение относительно центра сцены - по умолчанию "0 0 0"
+     *          rotation - массив - определяет поворот относительно осей сцены - по умолчанию "0 0 0"
+     *          scale - массив - определяет масштаб объекта - по умолчанию "1 1 1"
+     */
     init() {
         // Получаем из атрибутов данные или задаем их по умолчанию.
         let translation =  this.transformElement.attributes["translation"] ?
@@ -47,6 +84,12 @@ class Transform {
         }
     }
 
+    /**
+     * Считает матрицу вида для трехмерного объекта.
+     * @param cameraMatrix {number[]} Матрица камеры.
+     * @param projectionMatrix {number[]} Матрица проекции.
+     * @returns {number[]} Матрица вида.
+     */
     getMatrix(cameraMatrix, projectionMatrix) {
         let matrix = cameraMatrix;
         matrix = Algebra.translate(matrix, this.translation[0], this.translation[1], this.translation[2]);
@@ -59,6 +102,10 @@ class Transform {
         return matrix;
     }
 
+    /**
+     * Считает матрицу нормалей для трехмерного объекта.
+     * @returns {number[]} Матрица нормалей.
+     */
     getNormalMatrix() {
         let matrix = Algebra.identity();
         matrix = Algebra.translate(matrix, this.translation[0], this.translation[1], this.translation[2]);

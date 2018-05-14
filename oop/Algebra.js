@@ -1,4 +1,14 @@
+/**
+ * Класс вспомогательных алгебраиеских функций, совершающий операции над матрицами 4*4 и векторами 3.
+ */
 class Algebra {
+    /**
+     * Создает матрицу переноса.
+     * @param tx {number} Перенос по оси X.
+     * @param ty {number} Перенос по оси Y.
+     * @param tz {number} Перенос по оси Z.
+     * @returns {number[]} Матрица переноса.
+     */
     static translation(tx, ty, tz) {
         return [
             1, 0, 0, 0,
@@ -8,6 +18,11 @@ class Algebra {
         ];
     }
 
+    /**
+     * Создает матрицу поворота по оси X.
+     * @param angleInRadians {number} Угол поворота в радианах по оси X.
+     * @returns {number[]} Матрица поворота.
+     */
     static xRotation(angleInRadians) {
         let c = Math.cos(angleInRadians);
         let s = Math.sin(angleInRadians);
@@ -20,6 +35,11 @@ class Algebra {
         ];
     }
 
+    /**
+     * Создает матрицу поворота по оси Y.
+     * @param angleInRadians {number} Угол поворота в радианах по оси Y.
+     * @returns {number[]} Матрица поворота.
+     */
     static yRotation(angleInRadians) {
         let c = Math.cos(angleInRadians);
         let s = Math.sin(angleInRadians);
@@ -32,6 +52,11 @@ class Algebra {
         ];
     }
 
+    /**
+     * Создает матрицу поворота по оси Z.
+     * @param angleInRadians {number} Угол поворота в радианах по оси Z.
+     * @returns {number[]} Матрица поворота.
+     */
     static zRotation(angleInRadians) {
         let c = Math.cos(angleInRadians);
         let s = Math.sin(angleInRadians);
@@ -44,6 +69,13 @@ class Algebra {
         ];
     }
 
+    /**
+     * Создает матрицу масштабирования.
+     * @param sx {number} Масштаб по оси X.
+     * @param sy {number} Масштаб по оси Y.
+     * @param sz {number} Масштаб по оси Z.
+     * @returns {number[]} Матрица масштабирования.
+     */
     static scaling(sx, sy, sz) {
         return [
             sx, 0, 0, 0,
@@ -53,26 +85,68 @@ class Algebra {
         ];
     }
 
+    /**
+     * Выполняет перенос матрицы на заданные значения.
+     * @param m {number[]} Исходная матрица
+     * @param tx {number} Перенос по оси X.
+     * @param ty {number} Перенос по оси Y.
+     * @param tz {number} Перенос по оси Z.
+     * @returns {number[]} Результирующая матрица.
+     */
     static translate(m, tx, ty, tz) {
         return Algebra.multiply(m, Algebra.translation(tx, ty, tz));
     }
 
+    /**
+     * Выполняет поворот матрицы по оси X.
+     * @param m {number[]} Исходная матрица.
+     * @param angleInRadians {number} Угол поворота по оси X в радианах.
+     * @returns {number[]} Результирующая матрица.
+     */
     static xRotate(m, angleInRadians) {
         return Algebra.multiply(m, Algebra.xRotation(angleInRadians));
     }
 
+    /**
+     * Выполняет поворот матрицы по оси Y.
+     * @param m {number[]} Исходная матрица.
+     * @param angleInRadians {number} Угол поворота по оси Y в радианах.
+     * @returns {number[]} Результирующая матрица.
+     */
     static yRotate(m, angleInRadians) {
         return Algebra.multiply(m, Algebra.yRotation(angleInRadians));
     }
 
+    /**
+     * Выполняет поворот матрицы по оси Z.
+     * @param m {number[]} Исходная матрица.
+     * @param angleInRadians {number} Угол поворота по оси Z в радианах.
+     * @returns {number[]} Результирующая матрица.
+     */
     static zRotate(m, angleInRadians) {
         return Algebra.multiply(m, Algebra.zRotation(angleInRadians));
     }
 
+    /**
+     * Выполняет масшабирование матрицы на заданные параметры.
+     * @param m {number[]} Исходная матрица
+     * @param sx {number} Масштабирование по оси X.
+     * @param sy {number} Масштабирование по оси Y.
+     * @param sz {number} Масштабирование по оси Z.
+     * @returns {number[]} Результирующая матрица.
+     */
     static scale(m, sx, sy, sz) {
         return Algebra.multiply(m, Algebra.scaling(sx, sy, sz));
     }
 
+    /**
+     * Создает матрицу перспективы по заданным параметрам.
+     * @param fieldOfViewInRadians {number} Угол отображения области видимости в радианах.
+     * @param aspect {number} Отношение ширины сцены к высоте.
+     * @param near {number} Наименьший индекс, видимый камере, по Z.
+     * @param far {number} Наибольший индекс, видимый камере, по Z.
+     * @returns {number[]} Матрица перспективы.
+     */
     static perspective(fieldOfViewInRadians, aspect, near, far) {
         let f = Math.tan(Math.PI * 0.5 - 0.5 * fieldOfViewInRadians);
         let rangeInv = 1.0 / (near - far);
@@ -85,6 +159,12 @@ class Algebra {
         ];
     }
 
+    /**
+     * Перемножает две матрицы в обратном порядке.
+     * @param b {number[]} Матрица-правый множитель.
+     * @param a {number[]} Матрица-левый множитель.
+     * @returns {number[]} Результат матричного умножения.
+     */
     static multiply(b, a) {
         let result = [];
 
@@ -102,6 +182,10 @@ class Algebra {
         return result;
     }
 
+    /**
+     * Создает единичную матрицу.
+     * @returns {number[]} Единичная матрица.
+     */
     static identity() {
         return [
             1, 0, 0, 0,
@@ -111,6 +195,11 @@ class Algebra {
         ];
     }
 
+    /**
+     * Создает обратную матрицу.
+     * @param m {number[]} Исходная матрица.
+     * @returns {number[]} Матрица обратная исходной.
+     */
     static inverse(m) {
         let m00 = m[0 * 4 + 0];
         let m01 = m[0 * 4 + 1];
@@ -199,8 +288,8 @@ class Algebra {
     /**
      * Преобразует матрицу вида(4*4) в нормальную матрицу(3*3).
      *
-     * @param a Исходная матрица вида.
-     * @returns {*} Нормальная матрица для исходной.
+     * @param a {number[]} Исходная матрица вида.
+     * @returns {number[]} Нормальная матрица для исходной.
      */
     static normalFromMat4(a) {
         let out = [
@@ -227,7 +316,7 @@ class Algebra {
         let b10 = a21 * a33 - a23 * a31;
         let b11 = a22 * a33 - a23 * a32;
 
-        // Calculate the determinant
+        // Подсчет детерминанта
         let det = b00 * b11 - b01 * b10 + b02 * b09 + b03 * b08 - b04 * b07 + b05 * b06;
 
         if (!det) {
@@ -250,9 +339,14 @@ class Algebra {
         return out;
     }
 
+    /**
+     * Нормирует исходный вектор.
+     * @param v {number[]} Исходный вектор.
+     * @returns {number[]} Нормированный вектор.
+     */
     static normalize(v) {
         let length = Math.sqrt(v[0] * v[0] + v[1] * v[1] + v[2] * v[2]);
-        // проверяем, что мы не делим на 0
+        // Проверяем, что мы не делим на 0.
         if (length > 0.00001) {
             return [v[0] / length, v[1] / length, v[2] / length];
         } else {
