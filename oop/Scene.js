@@ -311,7 +311,7 @@ class Scene {
                 let primitiveType = this.gl.TRIANGLES; // рисовать триугольники.
                 let offset = 0; // начинать с начала буферов
                 let type = this.gl.UNSIGNED_SHORT;
-                let count = obj.shape.indices.length / 3; // количество триугольников передаваемых для отрисовки.
+                let count = obj.shape.indices.length; // количество триугольников передаваемых для отрисовки.
                 this.gl.drawElements(primitiveType, count, type, offset);
 
             } else {
