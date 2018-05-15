@@ -1,11 +1,10 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ru">
 <head>
     <meta charset="UTF-8">
-    <title>Easy WebGL. Simple cube example.</title>
+    <title>Easy WebGL. Simple example.</title>
     <script src="../src/easy_webgl.js"></script>
     <style>
-        /*параметры заданы для удобства*/
         body {
             margin: 0;
         }
@@ -18,25 +17,22 @@
     </style>
 </head>
 <body>
+
 <canvas is="my-scene" id="scene" fon-color="100 100 100 200">
+    <my-camera></my-camera>
     <my-directed-light></my-directed-light>
-    <my-camera navigation-type="object" camera-position="0 0 10"></my-camera>
     <my-transform translation="0 0 -100">
         <my-shape>
             <my-box></my-box>
             <my-appearance>
-                <my-color color="0 0 255"></my-color>
+                <my-color  color="0 0 255"></my-color>
             </my-appearance>
         </my-shape>
     </my-transform>
 </canvas>
 <script type="text/javascript">
-    let scene;
-    for (let canva of document.getElementsByTagName("canvas")) {
-        if (canva.attributes["is"] && canva.attributes["is"].value === "my-scene") {
-            scene = new Scene(canva);
-        }
-    }
+    let scene = new Scene(document.getElementById("scene"));
 </script>
+
 </body>
 </html>

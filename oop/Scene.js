@@ -193,7 +193,7 @@ class Scene {
     }
 
     /**
-     * Подгоняем размер canvas под экран
+     * Подгоняет размер canvas под экран
      */
     resize() {
         // получаем размер HTML-элемента canvas
@@ -316,10 +316,10 @@ class Scene {
 
             } else {
                 // Отрисовка сцены.
-                let primitiveType = world.gl.TRIANGLES; // рисовать триугольники.
+                let primitiveType = this.gl.TRIANGLES; // рисовать триугольники.
                 let offset = 0; // начинать с начала буферов
                 let count = obj.shape.vertices.length / 3; // количество триугольников передаваемых для отрисовки.
-                world.gl.drawArrays(primitiveType, offset, count);
+                this.gl.drawArrays(primitiveType, offset, count);
             }
 
         }

@@ -18,6 +18,7 @@ class Transform {
         this.transformElement = transformElement;
         /**
          * Трехмерная сцена, в которой определен объект.
+         * @type {Scene}
          */
         this.scene = scene;
         /**

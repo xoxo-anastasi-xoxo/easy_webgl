@@ -12,6 +12,10 @@ class Color {
      * @param vertexCount {number}
      */
     constructor(colorElement, vertexCount) {
+        /**
+         * Список цветов вершин фигуры.
+         * @type {number[]}
+         */
         this.colors = [];
 
         // Получаем из атрибута данные или задаем их по умолчанию.
