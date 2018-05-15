@@ -39,9 +39,11 @@
 <div class="container">
     <canvas is="my-scene" id="scene">
 
-        <my-camera navigation-type="object" camera-position="0 0 10"></my-camera>
+        <my-camera navigation-type="camera" camera-position="0 0 10"></my-camera>
 
-        <my-transform translation="0 0 -10">
+        <my-directed-light></my-directed-light>
+
+        <my-transform rotation="0 30 0" translation="0 0 -10">
             <my-shape>
                 <my-box></my-box>
                 <my-appearance>

@@ -37,15 +37,17 @@
 </head>
 <body>
 <div class="container">
-    <canvas is="my-scene" id="scene">
+    <canvas is="my-scene" id="scene" fon-color="227 127 200 200">
 
         <my-camera navigation-type="object" camera-position="0 0 10"></my-camera>
 
-        <my-transform translation="0 0 -10">
+        <my-directed-light></my-directed-light>
+
+        <my-transform rotation="0 30 0" translation="0 -8 -10">
             <my-shape>
-                <my-box></my-box>
+                <my-indexed-face-set model="Winnie-the-Pooh.obj"></my-indexed-face-set>
                 <my-appearance>
-                    <my-color color="0 0 255"></my-color>
+                    <my-color color="235 213 52"></my-color>
                 </my-appearance>
             </my-shape>
         </my-transform>

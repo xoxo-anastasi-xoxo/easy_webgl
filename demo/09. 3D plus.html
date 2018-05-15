@@ -41,11 +41,31 @@
 
         <my-camera navigation-type="object" camera-position="0 0 10"></my-camera>
 
-        <my-transform translation="0 0 -10">
+        <my-directed-light></my-directed-light>
+
+        <my-transform rotation="0 30 0" translation="0 0 -10">
             <my-shape>
-                <my-box></my-box>
+                <my-box size="20 5 5"></my-box>
                 <my-appearance>
-                    <my-color color="0 0 255"></my-color>
+                    <my-color color="217 54 168"></my-color>
+                </my-appearance>
+            </my-shape>
+        </my-transform>
+
+        <my-transform rotation="0 30 0" translation="0 0 -10">
+            <my-shape>
+                <my-box size="5 20 5"></my-box>
+                <my-appearance>
+                    <my-color color="217 54 168"></my-color>
+                </my-appearance>
+            </my-shape>
+        </my-transform>
+
+        <my-transform rotation="0 30 0" translation="0 0 -10">
+            <my-shape>
+                <my-box size="5 5 20"></my-box>
+                <my-appearance>
+                    <my-color color="217 54 168"></my-color>
                 </my-appearance>
             </my-shape>
         </my-transform>
