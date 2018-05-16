@@ -19,17 +19,18 @@
 <body>
 
 <canvas is="my-scene" id="scene" fon-color="100 100 100 200">
-    <my-camera></my-camera>
+    <my-camera camera-position="0 0 20"></my-camera>
     <my-directed-light></my-directed-light>
-    <my-transform translation="0 0 -100">
+    <my-transform rotation="15 20 0">
         <my-shape>
             <my-box></my-box>
             <my-appearance>
-                <my-color  color="0 0 255"></my-color>
+                <my-color></my-color>
             </my-appearance>
         </my-shape>
     </my-transform>
 </canvas>
+
 <script type="text/javascript">
     let scene = new Scene(document.getElementById("scene"));
 </script>
